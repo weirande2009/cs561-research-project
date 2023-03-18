@@ -1,5 +1,5 @@
-make_config.mk
-rocksdb.pc
+#make_config.mk
+#rocksdb.pc
 
 *.a
 *.arc
@@ -38,7 +38,7 @@ blob_dump
 block_cache_trace_analyzer
 tools/block_cache_analyzer/*.pyc
 column_aware_encoding_exp
-util/build_version.cc
+#util/build_version.cc
 build_tools/VALGRIND_LOGS/
 coverage/COVERAGE_REPORT
 .gdbhistory
