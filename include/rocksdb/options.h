@@ -1405,6 +1405,8 @@ struct DBOptions {
 
 // Options to control the behavior of a database (passed to DB::Open)
 struct Options : public DBOptions, public ColumnFamilyOptions {
+  // Ran: Add our Enumerator here as a member variable
+
   // Create an Options object with default values for all fields.
   Options() : DBOptions(), ColumnFamilyOptions() {}
 

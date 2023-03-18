@@ -60,6 +60,9 @@ enum CompactionPri : char {
   // level. The file picking process will cycle through all the files in a
   // round-robin manner.
   kRoundRobin = 0x4,
+
+  // Ran: Add a new compaction type which will enumerate all possible file selections
+  kEnumerateAll = 0x5,
 };
 
 struct CompactionOptionsFIFO {
