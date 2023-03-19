@@ -41,7 +41,7 @@ void runWorkload(Options& op, WriteOptions& write_op, ReadOptions& read_op) {
     op.write_buffer_size = 8 * 1024 * 1024;
 
     // set the compaction strategy
-    op.compaction_pri = kEnumerateAll;
+    // op.compaction_pri = kEnumerateAll;
 
     {
         op.memtable_factory = std::shared_ptr<VectorRepFactory>(new VectorRepFactory);

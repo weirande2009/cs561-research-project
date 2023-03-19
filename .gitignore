@@ -1,4 +1,4 @@
-#make_config.mk
+make_config.mk
 #rocksdb.pc
 
 *.a
@@ -96,3 +96,6 @@ fuzz/crash-*
 
 cmake-build-*
 third-party/folly/
+
+examples/workload.txt
+examples/simple_example.cc
