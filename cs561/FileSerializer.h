@@ -7,19 +7,19 @@ struct FileTag{
     rocksdb::InternalKey smallest;  // Smallest internal key served by table
     rocksdb::InternalKey largest;   // Largest internal key served by table
     uint64_t num_entries = 0;
-}
+};
 
 class FileSerializer{
 private:
 
 
 public:
-    FileSerialer();
-    ~FileSerialer();
+    FileSerializer();
+    ~FileSerializer();
 
     // Serialize the file metadata into a string by using FileTag
     // @param file: the file metadata that is going to be serialized
-    string Serialize(cosnt rocksdb::FileMetaData& file);
+    std::string Serialize(const rocksdb::FileMetaData* file);
 
     // Check whether the two versions are the same
     // @param version1: the first version

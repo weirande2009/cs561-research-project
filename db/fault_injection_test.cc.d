@@ -78,4 +78,4 @@ db/fault_injection_test.cc.d db/fault_injection_test.o \
  file/file_util.h table/merging_iterator.h util/repeatable_thread.h \
  env/mock_env.h env/composite_env_wrapper.h include/rocksdb/convenience.h \
  test_util/testharness.h port/stack_trace.h test_util/testutil.h \
- utilities/fault_injection_env.h utilities/fault_injection_fs.h
+ utilities/fault_injection_env.h
