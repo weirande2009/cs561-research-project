@@ -5,10 +5,11 @@ set(CMAKE_CXX_STANDARD 17)
 set(ROCKSDB_LIB ${CMAKE_CURRENT_SOURCE_DIR}/../librocksdb.a)
 set(OTHERS_LIB pthread rt dl snappy gflags z bz2 lz4 zstd)
 
-include_directories(../db)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/..)
+#include_directories(../db)
 include_directories(../include)
 
-add_executable(cs561 cs561/AllFilesEnumerator.cc cs561/AllFilesEnumerator.h cs561/FileSerializer.cc cs561/FileSerializer.h cs561/PickingHistoryCollector.cc cs561/PickingHistoryCollector.h)
+add_executable(cs561 cs561/FileSerializer.cc cs561/FileSerializer.h cs561/PickingHistoryCollector.cc cs561/PickingHistoryCollector.h)
 target_link_libraries(cs561
   ${ROCKSDB_LIB} ${OTHERS_LIB})
 
