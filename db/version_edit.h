@@ -306,6 +306,11 @@ struct FileMetaData {
   }
 };
 
+struct Fsize {
+  size_t index;
+  FileMetaData* file;
+};
+
 // A compressed copy of file meta data that just contain minimum data needed
 // to serve read operations, while still keeping the pointer to full metadata
 // of the file in case it is needed.

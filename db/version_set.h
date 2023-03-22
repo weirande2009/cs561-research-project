@@ -62,6 +62,8 @@
 #include "util/coro_utils.h"
 #include "util/hash_containers.h"
 
+#include "rocksdb/cs561/AllFilesEnumerator.h"
+
 namespace ROCKSDB_NAMESPACE {
 
 namespace log {
@@ -82,6 +84,8 @@ class MergeIteratorBuilder;
 class SystemClock;
 class ManifestTailer;
 class FilePickerMultiGet;
+
+class AllFilesEnumerator;
 
 // VersionEdit is always supposed to be valid and it is used to point at
 // entries in Manifest. Ideally it should not be used as a container to
@@ -117,16 +121,13 @@ extern void DoGenerateLevelFilesBrief(LevelFilesBrief* file_level,
                                       const std::vector<FileMetaData*>& files,
                                       Arena* arena);
 
-struct Fsize {
-  size_t index;
-  FileMetaData* file;
-};
-
 // Information of the storage associated with each Version, including number of
 // levels of LSM tree, files information at each level, files marked for
 // compaction, blob files, etc.
 class VersionStorageInfo {
  public:
+  AllFilesEnumerator all_files_enumerator;
+
   VersionStorageInfo(const InternalKeyComparator* internal_comparator,
                      const Comparator* user_comparator, int num_levels,
                      CompactionStyle compaction_style,

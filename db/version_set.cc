@@ -3861,6 +3861,7 @@ void VersionStorageInfo::UpdateFilesByCompactionPri(
         break;
       case kEnumerateAll:
         // include our AllFilesEnumerator and put the collected file at the front
+        all_files_enumerator.EnumerateAll(temp);
         std::cout << "kEnumerateAll" << std::endl;
         break;
       default:
