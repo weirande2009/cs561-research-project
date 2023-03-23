@@ -11,14 +11,21 @@ class PickingHistoryCollector;
 class AllFilesEnumerator{
 private:
     PickingHistoryCollector collector;
+    AllFilesEnumerator(){
+
+    }
+
+    static AllFilesEnumerator instance;
 
 public:
-    AllFilesEnumerator();
+    static AllFilesEnumerator& GetInstance() {
+        return instance;
+    }
     ~AllFilesEnumerator();
 
     // according to the current file version, choose a new file as the first file
     // @param temp: the current file version
-    void EnumerateAll(std::vector<Fsize>& temp);
+    void EnumerateAll(std::vector<Fsize>& temp, int level);
 
 };
 

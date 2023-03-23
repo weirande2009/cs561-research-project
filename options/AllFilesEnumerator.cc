@@ -10,7 +10,7 @@ AllFilesEnumerator::~AllFilesEnumerator() {
 
 }
 
-void AllFilesEnumerator::EnumerateAll(std::vector<rocksdb::Fsize>& temp) {
+void AllFilesEnumerator::EnumerateAll(std::vector<rocksdb::Fsize>& temp, int level) {
     int index = -1;
     // compute hash of the current version
     static std::hash<std::vector<ROCKSDB_NAMESPACE::Fsize>> hasher;

@@ -126,8 +126,6 @@ extern void DoGenerateLevelFilesBrief(LevelFilesBrief* file_level,
 // compaction, blob files, etc.
 class VersionStorageInfo {
  public:
-  AllFilesEnumerator all_files_enumerator;
-
   VersionStorageInfo(const InternalKeyComparator* internal_comparator,
                      const Comparator* user_comparator, int num_levels,
                      CompactionStyle compaction_style,
