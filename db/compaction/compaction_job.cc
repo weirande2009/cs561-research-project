@@ -858,6 +858,8 @@ Status CompactionJob::Install(const MutableCFOptions& mutable_cf_options) {
         bytes_written_all / static_cast<double>(stats.micros);
   }
 
+  // TODO: Add WA to collector
+
   const std::string& column_family_name = cfd->GetName();
 
   constexpr double kMB = 1048576.0;

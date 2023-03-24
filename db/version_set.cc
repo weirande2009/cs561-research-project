@@ -3860,8 +3860,8 @@ void VersionStorageInfo::UpdateFilesByCompactionPri(
                              level0_non_overlapping_, level, &temp);
         break;
       case kEnumerateAll:
-        // include our AllFilesEnumerator and put the collected file at the front
-        AllFilesEnumerator::GetInstance().EnumerateAll(temp);
+        // Put the collected file at the front
+        AllFilesEnumerator::GetInstance().EnumerateAll(temp, level);
         std::cout << "kEnumerateAll" << std::endl;
         break;
       default:

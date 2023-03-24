@@ -98,4 +98,3 @@ cmake-build-*
 third-party/folly/
 
 examples/workload.txt
-examples/simple_example.cc
