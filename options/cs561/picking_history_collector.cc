@@ -1,8 +1,10 @@
 #include <fstream>
 
-#include "PickingHistoryCollector.h"
+#include "rocksdb/cs561/picking_history_collector.h"
 
 using std::endl;
+
+namespace ROCKSDB_NAMESPACE {
 
 void PickingHistoryCollector::AddPickingFile(const std::vector<ROCKSDB_NAMESPACE::Fsize> &temp, int index) {
 //    std::string serialized_tmp = serialize_Fsize_vec(temp);
@@ -45,7 +47,7 @@ std::string PickingHistoryCollector::serialize_Fsize_vec(const std::vector<ROCKS
     std::string res;
     // size_t length(10/20) + split character(1)
     res.reserve((std::to_string(std::numeric_limits<size_t>::max()).size() + 1) * n);
-    for (int i = 0; i < n; ++ i) {
+    for (std::size_t i = 0; i < n; ++ i) {
         res += std::to_string(ordered_temp[i]);
         res.push_back('A');
     }
@@ -64,7 +66,7 @@ void PickingHistoryCollector::recover_from_file() {
         std::set<int> indexes;
 
         f >> hash_value >> n;
-        for (int i = 0; i < n; ++ i) {
+        for (std::size_t i = 0; i < n; ++ i) {
             f >> idx;
             indexes.insert(idx);
         }
@@ -86,3 +88,5 @@ void PickingHistoryCollector::dump_to_file() {
 
     f.close();
 }
+
+} // namespace ROCKSDB_NAMESPACE

@@ -1,4 +1,4 @@
-#include "rocksdb/cs561/AllFilesEnumerator.h"
+#include "rocksdb/cs561/all_files_enumerator.h"
 
 namespace ROCKSDB_NAMESPACE {
 

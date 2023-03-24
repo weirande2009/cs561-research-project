@@ -1,4 +1,6 @@
-#include "cs561/FileSerializer.h"
+#include "rocksdb/cs561/file_serializer.h"
+
+namespace ROCKSDB_NAMESPACE {
 
 FileSerializer::FileSerializer() {
 
@@ -28,11 +30,11 @@ bool FileSerializer::IsSameVersion(std::vector<std::string>& version1, std::vect
     }
     // build a set for verison2
     std::unordered_set<std::string> version2_hashset;
-    for(int i=0; i<version2.size(); i++){
+    for(std::size_t i=0; i<version2.size(); i++){
         version2_hashset.insert(version2[i]);
     }
     // Check whether all the files in version1 are in version2
-    for(int i=0; i<version1.size(); i++){
+    for(std::size_t i=0; i<version1.size(); i++){
         if(version2_hashset.find(version1[i]) == version2_hashset.end()){
             return false;
         }
@@ -41,3 +43,5 @@ bool FileSerializer::IsSameVersion(std::vector<std::string>& version1, std::vect
     }
     return true;
 }
+
+} // namespace ROCKSDB_NAMESPACE
