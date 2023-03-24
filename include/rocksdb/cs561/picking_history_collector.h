@@ -11,23 +11,6 @@
 #include "rocksdb/cs561/file_serializer.h"
 #include "rocksdb/cs561/version_forests.h"
 
-namespace std {
-    template<>
-    struct hash<std::vector<ROCKSDB_NAMESPACE::Fsize>> {
-        inline size_t operator()(const std::vector<ROCKSDB_NAMESPACE::Fsize>& temp) const {
-            static rocksdb::FileSerializer serializer;
-            static hash<std::string> hasher;
-
-            size_t res = 0;
-
-            for (const auto& t: temp)
-                res ^= hasher(serializer.Serialize(t.file));
-
-            return res;
-        }
-    };
-}
-
 namespace ROCKSDB_NAMESPACE {
 
 struct Fsize;
@@ -41,7 +24,8 @@ private:
     std::unordered_map<size_t, std::set<int>> m_history;
 
     /******* variables above maybe deprecated *******/ 
-    inline static const std::string DUMP_FILEPATH = "DumpFile";
+    inline static const std::string DUMP_FILEPATH1 = "DumpFile1";
+    inline static const std::string DUMP_FILEPATH2 = "DumpFile2";
 
     // this file will record some numerical data
     inline static const std::string RECORD_FILEPATH = "RecordFile";
@@ -75,7 +59,7 @@ private:
     void dump_to_file();
 
 public:
-    PickingHistoryCollector() : forests(VersionForests(DUMP_FILEPATH)){
+    PickingHistoryCollector() : forests(VersionForests({DUMP_FILEPATH1, DUMP_FILEPATH2})){
         recover_from_file();
     }
 
@@ -100,6 +84,7 @@ public:
 
     /******* functions above maybe deprecated *******/ 
 
+    // TODO: Chen
     /**
      * Find a file index in the current level to compact
      * @param level: the level of the version
@@ -108,17 +93,34 @@ public:
      */
     size_t FindPickingFile(int level, size_t hash_value);
 
+    // TODO: Chen
     /**
      * Update the current WA
      * @param new_WA: the newy computed WA
     */
     void UpdateWA(size_t new_WA);
 
+    // TODO: Chen
     /**
      * Check whether the current WA has already exceeded the minimum even 
      * all the left compactions are trivial move.
     */
     bool CheckContinue();
+
+    // TODO: Chen
+    /**
+     * Update the left inserts write
+     * @param dec: decrement of left bytes
+    */
+   void UpdateLeftBytes(size_t dec);
+
+   // TODO: Peixu
+   /**
+    * Log file selection of a certain version
+    * @param hash_value: hash value of the version
+    * @param index: index of the chosen file
+   */
+  void LogSelection(size_t hash_value, int index);
 
 };
 

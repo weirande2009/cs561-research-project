@@ -34,20 +34,27 @@ private:
     // minimum WA of current combination selections from this node to the leaf
     size_t min_WA;
 
+    // TODO: Peixu
     // load forest from file
     void LoadFromFile();
 
+    // TODO: Peixu
     // dump forest to file
     void DumpToFile();
 
+    // TODO: Ran
     // add when doesn't exist the version node of the hash value
     void AddNode(size_t hash_value, int file_num);
 
 
 public:
-    LevelVersionForest();
+    // TODO: Peixu
+    LevelVersionForest(const std::string& file_path);
+
+    // TODO: Peixu
     ~LevelVersionForest();
 
+    // TODO: Ran
     // get the index of the file in the current version
     size_t GetCompactionFile(size_t hash_value, int file_num);
 };
@@ -61,9 +68,12 @@ private:
     std::vector<LevelVersionForest> level_version_forests;
 
 public:
-    VersionForests(const std::string& file_path);
+    // TODO: Peixu
+    VersionForests(const std::vector<std::string>& level_file_path);
+    // TODO: Peixu
     ~VersionForests();
 
+    // TODO: Ran
     // get the index of the file in the current version of a certain level
     size_t GetCompactionFile(int level, size_t hash_value, int file_num);
 };

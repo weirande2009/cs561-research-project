@@ -2,6 +2,23 @@
 
 #include "db/version_edit.h"
 
+namespace std {
+    template<>
+    struct hash<std::vector<ROCKSDB_NAMESPACE::Fsize>> {
+        inline size_t operator()(const std::vector<ROCKSDB_NAMESPACE::Fsize>& temp) const {
+            static rocksdb::FileSerializer serializer;
+            static hash<std::string> hasher;
+
+            size_t res = 0;
+
+            for (const auto& t: temp)
+                res ^= hasher(serializer.Serialize(t.file));
+
+            return res;
+        }
+    };
+}
+
 namespace ROCKSDB_NAMESPACE {
 
 struct FileMetaData;
