@@ -2,6 +2,7 @@
 #include <vector>
 #include <unordered_map>
 #include <fstream>
+#include <cassert>
 
 struct VersionNode{
     // id of the version
@@ -76,9 +77,7 @@ private:
     // map hash value of a version to the id of the VersionNode in version_nodes
     std::unordered_map<size_t, size_t> hash_to_id;
     // version id of the last compaction
-    size_t last_version_id = 0;
-    // minimum WA of current combination selections from this node to the leaf
-    size_t min_WA = 0;
+    size_t last_version_id = -1;
     // file path of this LevelVersionForest
     // Important: file_path cannot contain ','/'\n'
     std::string file_path;
@@ -100,15 +99,6 @@ private:
             f >> node;
             version_nodes.emplace_back(std::move(node));
         }
-
-        // current_version_id
-        f >> current_version_id;
-
-        // min_WA
-        f >> min_WA;
-
-        // file_path
-        f >> file_path;
 
         // hash_to_id
         hash_to_id.reserve(version_nodes.size());
