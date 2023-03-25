@@ -89,6 +89,10 @@ void PickingHistoryCollector::dump_to_file() {
     f.close();
 }
 
+size_t FindPickingFile(int level, size_t hash_value) {
+    return forests.GetCompactionFile(level, hash_value, 1);
+}
+
 void UpdateWA(size_t new_WA) {
     WA += new_WA;
 }
