@@ -77,7 +77,7 @@ void PickingHistoryCollector::recover_from_file() {
 }
 
 void PickingHistoryCollector::dump_to_file() {
-    std::ofstream f(DUMP_FILENAME);
+    std::ofstream f(DumpFile1);
 
     for (const auto& [hash_value, indexes]: m_history) {
         f << hash_value << endl;
@@ -99,6 +99,10 @@ bool CheckContinue() {
 
 void UpdateLeftBytes(size_t dec) {
     left_bytes -= dec;
+}
+
+VersionForests& PickingHistoryCollector::GetVersionForests(){
+    return forests;
 }
 
 } // namespace ROCKSDB_NAMESPACE

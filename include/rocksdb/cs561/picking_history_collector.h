@@ -112,15 +112,21 @@ public:
      * Update the left inserts write
      * @param dec: decrement of left bytes
     */
-   void UpdateLeftBytes(size_t dec);
+    void UpdateLeftBytes(size_t dec);
 
-   // TODO: Peixu
-   /**
-    * Log file selection of a certain version
-    * @param hash_value: hash value of the version
-    * @param index: index of the chosen file
-   */
-  void LogSelection(size_t hash_value, int index);
+    // TODO: Peixu
+    /**
+     * Log file selection of a certain version
+     * @param hash_value: hash value of the version
+     * @param index: index of the chosen file
+    */
+    void LogSelection(size_t hash_value, int index);
+
+    /**
+     * Get forests
+    */
+   VersionForests& GetVersionForests();
+
 };
 
 } // namespace ROCKSDB_NAMESPACE

@@ -20,7 +20,10 @@ struct VersionNode{
     // indicate the files that have been chosen
     // the index of the vector is the index of the chosen file in this version and value is 
     // the id of the new version after compaction. The real node will be stored in an array 
-    // in LevelVersionForest
+    // in LevelVersionForest. Child node will not be created when have another compaction on 
+    // after this compaction, so we use long max as the temporary id to indicated this situation.
+    // If the child is long max, this means that there is no compaction after choosing this file
+    // and the child is a leaf.
     std::vector<size_t> chosen_children;
 
     // the number of files in this version
@@ -135,7 +138,12 @@ public:
     }
 
     // TODO: Ran
-    // get the index of the file in the current version
+    /**
+     * get the index of the file in the current version
+     * @param hash_value hash_value of the version
+     * @param file_num file number of the version
+     * @return long_max if there is no new file to pick, otherwise the index of the file to pick in the version
+    */
     size_t GetCompactionFile(size_t hash_value, int file_num);
 };
 
