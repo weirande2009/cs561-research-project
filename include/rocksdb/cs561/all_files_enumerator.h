@@ -11,9 +11,7 @@ class PickingHistoryCollector;
 class AllFilesEnumerator{
 private:
     PickingHistoryCollector collector;
-    AllFilesEnumerator(){
-
-    }
+    AllFilesEnumerator();
 
     static AllFilesEnumerator instance;
 

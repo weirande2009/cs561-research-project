@@ -32,8 +32,8 @@ void AllFilesEnumerator::EnumerateAll(std::vector<rocksdb::Fsize>& temp, int lev
     }
 }
 
-PickingHistoryCollector& GetCollector(){
-    return 
+PickingHistoryCollector& AllFilesEnumerator::GetCollector(){
+    return collector;
 }
 
 } // namespace ROCKSDB_NAMESPACE

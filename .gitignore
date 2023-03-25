@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 # make_config.mk
+=======
+#make_config.mk
+>>>>>>> 65bd74a6893cb40076580e2866c6fb1f650758bd
 #rocksdb.pc
 
 *.a
