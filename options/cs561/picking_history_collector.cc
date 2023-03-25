@@ -89,19 +89,19 @@ void PickingHistoryCollector::dump_to_file() {
     f.close();
 }
 
-size_t FindPickingFile(int level, size_t hash_value) {
+size_t PickingHistoryCollector::FindPickingFile(int level, size_t hash_value) {
     return forests.GetCompactionFile(level, hash_value, 1);
 }
 
-void UpdateWA(size_t new_WA) {
+void PickingHistoryCollector::UpdateWA(size_t new_WA) {
     WA += new_WA;
 }
 
-bool CheckContinue() {
+bool PickingHistoryCollector::CheckContinue() {
     return (WA + left_bytes) < global_min_WA;
 }
 
-void UpdateLeftBytes(size_t dec) {
+void PickingHistoryCollector::UpdateLeftBytes(size_t dec) {
     left_bytes -= dec;
 }
 
