@@ -1,4 +1,4 @@
-make_config.mk
+# make_config.mk
 #rocksdb.pc
 
 *.a

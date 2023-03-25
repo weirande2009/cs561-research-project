@@ -5,21 +5,31 @@
 struct VersionNode{
     // id of the version
     size_t id;
+
     // id of parent version
     size_t parent_id;
+
     // indicate the version of the files
     size_t hash_value;
+
     // total WA until this version
-    size_t total_WA;
+    // size_t total_WA;
+
     // indicate the files that have been chosen
-    // children[i] is the index of the chosen file in this version and value is a pair of 
-    // corresponding WA and the id of the new version after compaction
-    // the real node will be stored in an array
-    std::vector<std::pair<size_t, size_t>> chosen_children;
+    // the index of the vector is the index of the chosen file in this version and value is 
+    // the id of the new version after compaction. The real node will be stored in an array 
+    // in LevelVersionForest
+    std::vector<size_t> chosen_children;
+
     // the number of files in this version
     int file_num;
-    // tag for whether this version is a leaf
+    
+    // tag for whether this version is a leaf, when constructing, it's default to be true
+    // in case of there is not compaction on it
     bool is_leaf;
+
+    VersionNode() {}
+    VersionNode(size_t id, size_t parent_id, size_t hash_value, int file_num) : id(id), parent_id(parent_id), hash_value(hash_value), file_num(file_num) {}
 };
 
 // version forest of a level
@@ -29,8 +39,8 @@ private:
     std::vector<VersionNode> version_nodes;
     // map hash value of a version to the id of the VersionNode in version_nodes
     std::unordered_map<size_t, size_t> hash_to_id;
-    // version id of the next compaction
-    size_t current_version_id;
+    // version id of the last compaction
+    size_t last_version_id;
     // minimum WA of current combination selections from this node to the leaf
     size_t min_WA;
 
@@ -44,6 +54,7 @@ private:
 
     // TODO: Ran
     // add when doesn't exist the version node of the hash value
+    // this will only happen when 
     void AddNode(size_t hash_value, int file_num);
 
 
