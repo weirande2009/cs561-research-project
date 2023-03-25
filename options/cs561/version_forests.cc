@@ -1,3 +1,10 @@
+//
+// Created by bruce on 3/25/2023.
+//
+
+#include <cassert>
+
+
 #include "rocksdb/cs561/version_forests.h"
 
 void LevelVersionForest::AddNode(size_t hash_value, int file_num){
@@ -51,3 +58,7 @@ size_t LevelVersionForest::GetCompactionFile(size_t hash_value, int file_num){
 size_t VersionForests::GetCompactionFile(int level, size_t hash_value, int file_num){
     return level_version_forests[level].GetCompactionFile(hash_value, file_num);
 }
+
+#include "../../include/rocksdb/cs561/version_forests.h"
+#include "../../include/rocksdb/cs561/file_serializer.h"
+
