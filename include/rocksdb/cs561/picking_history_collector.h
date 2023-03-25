@@ -39,7 +39,7 @@ private:
     // current WA
     size_t WA;
 
-    // left bytes to be inserted
+    // remaining bytes to be inserted
     size_t left_bytes;
 
 private:
@@ -96,7 +96,7 @@ public:
     // TODO: Chen
     /**
      * Update the current WA
-     * @param new_WA: the newy computed WA
+     * @param new_WA: the newly computed WA
     */
     void UpdateWA(size_t new_WA);
 
