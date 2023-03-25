@@ -142,6 +142,10 @@ void runWorkload(Options& op, WriteOptions& write_op, ReadOptions& read_op) {
             break;
         }
 
+        AllFilesEnumerator &a = AllFilesEnumerator::GetInstance();
+        PickingHistoryCollector p = a.GetCollector();
+        p.UpdateLeftBytes(workload_size - counter);
+
         if (workload_size < 100) workload_size = 100;
         if (counter % (workload_size / 100) == 0) {
             showProgress(workload_size, counter);
