@@ -55,7 +55,7 @@ std::string PickingHistoryCollector::serialize_Fsize_vec(const std::vector<ROCKS
 }
 
 void PickingHistoryCollector::recover_from_file() {
-    std::ifstream f(DUMP_FILENAME);
+    std::ifstream f(DUMP_FILEPATH1);
     m_history.clear();
 
     std::string s;
@@ -77,7 +77,7 @@ void PickingHistoryCollector::recover_from_file() {
 }
 
 void PickingHistoryCollector::dump_to_file() {
-    std::ofstream f(DumpFile1);
+    std::ofstream f(DUMP_FILEPATH1);
 
     for (const auto& [hash_value, indexes]: m_history) {
         f << hash_value << endl;
