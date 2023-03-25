@@ -40,6 +40,7 @@ void runWorkload(Options& op, WriteOptions& write_op, ReadOptions& read_op) {
 
     op.create_if_missing = true;
     op.write_buffer_size = 8 * 1024 * 1024;
+    op.
 
     // set the compaction strategy
     // op.compaction_pri = kEnumerateAll;

@@ -57,6 +57,8 @@
 #include "test_util/sync_point.h"
 #include "util/stop_watch.h"
 
+#include "rocksdb/cs561/all_files_enumerator.h"
+
 namespace ROCKSDB_NAMESPACE {
 
 const char* GetCompactionReasonString(CompactionReason compaction_reason) {
@@ -859,6 +861,7 @@ Status CompactionJob::Install(const MutableCFOptions& mutable_cf_options) {
   }
 
   // TODO: Add WA to collector
+  
 
   const std::string& column_family_name = cfd->GetName();
 
