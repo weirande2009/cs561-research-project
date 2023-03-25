@@ -121,7 +121,6 @@ public:
     * @param index: index of the chosen file
    */
   void LogSelection(size_t hash_value, int index);
-
 };
 
 } // namespace ROCKSDB_NAMESPACE
