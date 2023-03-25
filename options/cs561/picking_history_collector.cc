@@ -98,7 +98,7 @@ void UpdateWA(size_t new_WA) {
 }
 
 bool CheckContinue() {
-    return WA + left_bytes < global_min_WA;
+    return (WA + left_bytes) < global_min_WA;
 }
 
 void UpdateLeftBytes(size_t dec) {
