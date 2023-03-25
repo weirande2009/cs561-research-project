@@ -6,40 +6,40 @@
 
 struct VersionNode{
     // id of the version
-    size_t id;
+    size_t id{};
 
     // id of parent version
-    size_t parent_id;
+    size_t parent_id{};
 
     // indicate the version of the files
-    size_t hash_value;
+    size_t hash_value{};
 
     // total WA until this version
     // size_t total_WA;
 
     // indicate the files that have been chosen
-    // the index of the vector is the index of the chosen file in this version and value is 
-    // the id of the new version after compaction. The real node will be stored in an array 
+    // the index of the vector is the index of the chosen file in this version and value is
+    // the id of the new version after compaction. The real node will be stored in an array
     // in LevelVersionForest
     std::vector<size_t> chosen_children;
 
     // the number of files in this version
-    int file_num;
-    
+    int file_num{};
+
     // tag for whether this version is a leaf, when constructing, it's default to be true
     // in case of there is not compaction on it
-    bool is_leaf;
+    bool is_leaf{};
 
     friend std::ostream& operator<< (std::ostream& os, const VersionNode& node) {
         static const std::string DELIM_COMMA = ",";
 
         os << node.id << DELIM_COMMA <<
-              node.parent_id << DELIM_COMMA <<
-              node.hash_value << DELIM_COMMA;
+           node.parent_id << DELIM_COMMA <<
+           node.hash_value << DELIM_COMMA;
 
         os << node.chosen_children.size() << DELIM_COMMA;
-        for (const size_t& id: node.chosen_children) {
-            os << id << DELIM_COMMA;
+        for (size_t child_id: node.chosen_children) {
+            os << child_id << DELIM_COMMA;
         }
 
         os << node.file_num << DELIM_COMMA << node.is_leaf << std::endl;
@@ -65,8 +65,8 @@ struct VersionNode{
         return is;
     };
 
-    VersionNode() {}
-    VersionNode(size_t id, size_t parent_id, size_t hash_value, int file_num) : id(id), parent_id(parent_id), hash_value(hash_value), file_num(file_num) {}
+    VersionNode() = default;
+    VersionNode(size_t id_, size_t parent_id_, size_t hash_value_, int file_num_) : id(id_), parent_id(parent_id_), hash_value(hash_value_), file_num(file_num_) {}
 };
 
 // version forest of a level
@@ -77,10 +77,10 @@ private:
     // map hash value of a version to the id of the VersionNode in version_nodes
     std::unordered_map<size_t, size_t> hash_to_id;
     // version id of the last compaction
-    size_t last_version_id = -1;
+    size_t last_version_id = std::numeric_limits<size_t>::max();
     // file path of this LevelVersionForest
-    // Important: file_path cannot contain ','/'\n'
-    std::string file_path;
+    // Important: file_path cannot contain ',' '\n'
+    const std::string file_path;
 
     // TODO: Peixu
     // load forest from file
@@ -104,16 +104,26 @@ private:
         hash_to_id.reserve(version_nodes.size());
         size_t sz = version_nodes.size();
         for (size_t i = 0; i < sz; ++i) {
-            auto p = hash_to_id.try_emplace(version_nodes[i].hash_value, i);
             // hash collision is strictly prohibited
-            assert(p.second);
+            assert(hash_to_id.try_emplace(version_nodes[i].hash_value, i).second);
         }
     }
 
     // TODO: Peixu
     // dump forest to file
     void DumpToFile() {
+        assert(!file_path.empty());
 
+        std::ofstream f(file_path);
+
+        // version_nodes
+        size_t vn_size = version_nodes.size();
+        f << vn_size;
+        for (const auto& vn: version_nodes) {
+            f << vn;
+        }
+
+        // no need for dumping hash_to_id
     }
 
     // TODO: Ran
@@ -124,8 +134,7 @@ private:
 
 public:
     // TODO: Peixu
-    explicit LevelVersionForest(const std::string& file_path) {
-        this->file_path = file_path;
+    explicit LevelVersionForest(const std::string& fp): file_path(fp) {
         LoadFromFile();
     }
 

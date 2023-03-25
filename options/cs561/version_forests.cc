@@ -1,6 +1,11 @@
-#include "rocksdb/cs561/version_forests.h"
+//
+// Created by bruce on 3/25/2023.
+//
 
-void LevelVersionForest::AddNode(size_t hash_value, int file_num){
-    
-    
-}
+#include <cassert>
+
+
+#include "rocksdb/cs561/version_forests.h"
+#include "../../include/rocksdb/cs561/version_forests.h"
+#include "../../include/rocksdb/cs561/file_serializer.h"
+
