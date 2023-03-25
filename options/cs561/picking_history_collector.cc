@@ -89,4 +89,16 @@ void PickingHistoryCollector::dump_to_file() {
     f.close();
 }
 
+void UpdateWA(size_t new_WA) {
+    WA += new_WA;
+}
+
+bool CheckContinue() {
+    return WA + left_bytes < global_min_WA;
+}
+
+void UpdateLeftBytes(size_t dec) {
+    left_bytes -= dec;
+}
+
 } // namespace ROCKSDB_NAMESPACE
