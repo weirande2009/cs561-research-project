@@ -4,8 +4,10 @@
 
 #include <cassert>
 
-
 #include "rocksdb/cs561/version_forests.h"
+
+// #include "../../include/rocksdb/cs561/version_forests.h"
+// #include "../../include/rocksdb/cs561/file_serializer.h"
 
 void LevelVersionForest::AddNode(size_t hash_value, int file_num){
     // the id is the index in version_nodes which is the size of current version_nodes
@@ -59,6 +61,5 @@ size_t VersionForests::GetCompactionFile(int level, size_t hash_value, int file_
     return level_version_forests[level].GetCompactionFile(hash_value, file_num);
 }
 
-#include "../../include/rocksdb/cs561/version_forests.h"
-#include "../../include/rocksdb/cs561/file_serializer.h"
+
 
