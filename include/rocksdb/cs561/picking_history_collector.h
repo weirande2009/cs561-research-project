@@ -132,7 +132,7 @@ public:
     /**
      * Get forests
     */
-   VersionForests& GetVersionForests();
+    VersionForests& GetVersionForests();
 
 };
 

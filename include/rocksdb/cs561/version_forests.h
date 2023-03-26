@@ -134,7 +134,6 @@ private:
     // this will only happen when 
     void AddNode(size_t hash_value, int file_num);
 
-
 public:
     // TODO: Peixu
     explicit LevelVersionForest(const std::string& fp): file_path(fp) {
@@ -154,6 +153,7 @@ public:
      * @return long_max if there is no new file to pick, otherwise the index of the file to pick in the version
     */
     size_t GetCompactionFile(size_t hash_value, int file_num);
+
 };
 
 // Contain forests for each level

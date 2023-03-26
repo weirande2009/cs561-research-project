@@ -1430,7 +1430,7 @@ Status DBImpl::CompactFilesImpl(
   compaction_job.Prepare();
 
   // record this compaction
-  AllFilesEnumerator::GetInstance().RecordCompaction(input_files, *version->storage_info());
+  // AllFilesEnumerator::GetInstance().RecordCompaction(input_files, *version->storage_info());
 
   mutex_.Unlock();
   TEST_SYNC_POINT("CompactFilesImpl:0");
