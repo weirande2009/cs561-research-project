@@ -33,6 +33,7 @@ private:
     // the version forests which stores the history of all levels
     VersionForests forests;
 
+    // FIXME: should we save this?
     // current global minimum WA
     size_t global_min_WA;
 
@@ -59,6 +60,7 @@ private:
     void dump_to_file();
 
 public:
+    // FIXME: initialize global_min_WA, WA and left_bytes
     PickingHistoryCollector() : forests(VersionForests({DUMP_FILEPATH1, DUMP_FILEPATH2})){
         recover_from_file();
     }

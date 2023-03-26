@@ -87,10 +87,13 @@ void LevelVersionForest::DumpToFile() {
 }
 
 void LevelVersionForest::AddNode(size_t hash_value, int file_num){
+    // FIXME: assert last_version_id != LONG_MAX
     // the id is the index in version_nodes which is the size of current version_nodes
     version_nodes.emplace_back(VersionNode(version_nodes.size(), last_version_id, hash_value, file_num));
+    // FIXME: it may not emplace to the hashmap
     // after emplace back, the index become the version_nodes.size()-1
     hash_to_id.try_emplace(hash_value, version_nodes.size()-1);
+    // FIXME: use push_back
     // update the index of the new node to the children of last node
     version_nodes[last_version_id].chosen_children.back() = version_nodes.size()-1;
 }
