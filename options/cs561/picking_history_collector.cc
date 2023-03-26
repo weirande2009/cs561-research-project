@@ -1,4 +1,5 @@
 #include <fstream>
+#include <iomanip>
 
 #include "rocksdb/cs561/picking_history_collector.h"
 
@@ -107,6 +108,18 @@ void PickingHistoryCollector::UpdateLeftBytes(size_t dec) {
 
 VersionForests& PickingHistoryCollector::GetVersionForests(){
     return forests;
+}
+
+//void PickingHistoryCollector::LogSelection(size_t hash_value, int index, size_t WA) {
+//    // FIXME: ignored
+//}
+
+void PickingHistoryCollector::Log(const std::string &content) {
+    static std::ofstream f(RECORD_FILEPATH);
+
+    const auto now = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+    const auto local_time = std::localtime(&now);
+    f << std::put_time(local_time, "%Y-%m-%d %H:%M:%S") << " --- " << content << std::endl;
 }
 
 } // namespace ROCKSDB_NAMESPACE

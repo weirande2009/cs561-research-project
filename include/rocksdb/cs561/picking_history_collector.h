@@ -114,20 +114,20 @@ public:
     */
     void UpdateLeftBytes(size_t dec);
 
-    // TODO: Peixu
-    /**
-     * Log file selection of a certain version
-     * @param hash_value: hash value of the version
-     * @param index: index of the chosen file
-    */
-    void LogSelection(size_t hash_value, int index, size_t WA);
+//    // TODO: Peixu
+//    /**
+//     * Log file selection of a certain version
+//     * @param hash_value: hash value of the version
+//     * @param index: index of the chosen file
+//    */
+//    void LogSelection(size_t hash_value, int index, size_t WA);
 
     // TODO: Peixu
     /**
      * Log file selection of a certain version
      * @param content content to log
     */
-    void Log(const std::string& content);
+    static void Log(const std::string& content);
 
     /**
      * Get forests

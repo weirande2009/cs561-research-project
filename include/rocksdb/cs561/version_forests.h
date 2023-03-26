@@ -33,43 +33,13 @@ struct VersionNode{
     // in case of there is not compaction on it
     bool is_leaf{};
 
-    friend std::ostream& operator<< (std::ostream& os, const VersionNode& node) {
-        static const std::string DELIM_COMMA = ",";
-
-        os << node.id << DELIM_COMMA <<
-           node.parent_id << DELIM_COMMA <<
-           node.hash_value << DELIM_COMMA;
-
-        os << node.chosen_children.size() << DELIM_COMMA;
-        for (size_t child_id: node.chosen_children) {
-            os << child_id << DELIM_COMMA;
-        }
-
-        os << node.file_num << DELIM_COMMA << node.is_leaf << std::endl;
-
-        return os;
-    }
-
-    friend std::istream& operator>> (std::istream& is, VersionNode& node) {
-        is >> node.id >> node.parent_id >> node.hash_value;
-        size_t sz;
-        is >> sz;
-
-        node.chosen_children.clear();
-        node.chosen_children.reserve(sz);
-        size_t tmp;
-        for (size_t i = 0; i < sz; ++ i) {
-            is >> tmp;
-            node.chosen_children.push_back(tmp);
-        }
-
-        is >> node.file_num >> node.is_leaf;
-
-        return is;
-    };
-
     VersionNode() = default;
+
     VersionNode(size_t id_, size_t parent_id_, size_t hash_value_, int file_num_) : id(id_), parent_id(parent_id_), hash_value(hash_value_), file_num(file_num_) {}
+
+    friend std::ostream& operator<< (std::ostream& os, const VersionNode& node);
+
+    friend std::istream& operator>> (std::istream& is, VersionNode& node);
 };
 
 // version forest of a level
@@ -87,47 +57,11 @@ private:
 
     // TODO: Peixu
     // load forest from file
-    void LoadFromFile() {
-        assert(!file_path.empty());
-
-        std::ifstream f(file_path);
-
-        // version_nodes
-        size_t vn_size;
-        f >> vn_size;
-        VersionNode node{};
-        version_nodes.clear();
-        version_nodes.reserve(vn_size);
-        for (size_t i = 0; i < vn_size; ++i) {
-            f >> node;
-            version_nodes.emplace_back(std::move(node));
-        }
-
-        // hash_to_id
-        hash_to_id.reserve(version_nodes.size());
-        size_t sz = version_nodes.size();
-        for (size_t i = 0; i < sz; ++i) {
-            // hash collision is strictly prohibited
-            assert(hash_to_id.try_emplace(version_nodes[i].hash_value, i).second);
-        }
-    }
+    void LoadFromFile();
 
     // TODO: Peixu
     // dump forest to file
-    void DumpToFile() {
-        assert(!file_path.empty());
-
-        std::ofstream f(file_path);
-
-        // version_nodes
-        size_t vn_size = version_nodes.size();
-        f << vn_size;
-        for (const auto& vn: version_nodes) {
-            f << vn;
-        }
-
-        // no need for dumping hash_to_id
-    }
+    void DumpToFile();
 
     // TODO: Ran
     // add when doesn't exist the version node of the hash value
@@ -137,14 +71,10 @@ private:
 
 public:
     // TODO: Peixu
-    explicit LevelVersionForest(const std::string& fp): file_path(fp) {
-        LoadFromFile();
-    }
+    explicit LevelVersionForest(const std::string& fp);
 
     // TODO: Peixu
-    ~LevelVersionForest() {
-        DumpToFile();
-    }
+    ~LevelVersionForest() noexcept;
 
     // TODO: Ran
     /**
@@ -166,10 +96,7 @@ private:
 
 public:
     // TODO: Peixu
-    explicit VersionForests(const std::vector<std::string>& level_file_path) {
-        for (const auto& path: level_file_path)
-            level_version_forests.emplace_back(path);
-    }
+    explicit VersionForests(const std::vector<std::string>& level_file_path);
 
     // TODO: Peixu
     ~VersionForests() = default;
