@@ -40,7 +40,6 @@ void runWorkload(Options& op, WriteOptions& write_op, ReadOptions& read_op) {
 
     op.create_if_missing = true;
     op.write_buffer_size = 8 * 1024 * 1024;
-    op.
 
     // set the compaction strategy
     // op.compaction_pri = kEnumerateAll;
@@ -143,9 +142,7 @@ void runWorkload(Options& op, WriteOptions& write_op, ReadOptions& read_op) {
             break;
         }
 
-        AllFilesEnumerator &a = AllFilesEnumerator::GetInstance();
-        PickingHistoryCollector p = a.GetCollector();
-        p.UpdateLeftBytes(workload_size - counter);
+        AllFilesEnumerator::GetInstance().GetCollector().UpdateLeftBytes(workload_size - counter);
 
         if (workload_size < 100) workload_size = 100;
         if (counter % (workload_size / 100) == 0) {

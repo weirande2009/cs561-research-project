@@ -22,6 +22,7 @@
 #include "test_util/sync_point.h"
 #include "util/cast_util.h"
 #include "util/concurrent_task_limiter_impl.h"
+#include "rocksdb/cs561/all_files_enumerator.h"
 
 namespace ROCKSDB_NAMESPACE {
 
@@ -1427,6 +1428,9 @@ Status DBImpl::CompactFilesImpl(
                                                   *c->mutable_cf_options());
 
   compaction_job.Prepare();
+
+  // record this compaction
+  AllFilesEnumerator::GetInstance().RecordCompaction(input_files, *version->storage_info());
 
   mutex_.Unlock();
   TEST_SYNC_POINT("CompactFilesImpl:0");
