@@ -91,6 +91,7 @@ void LevelVersionForest::AddNode(size_t hash_value, int file_num){
     assert(hash_to_id.find(hash_value) == hash_to_id.end());
     // the id is the index in version_nodes which is the size of current version_nodes
     version_nodes.emplace_back(VersionNode(version_nodes.size(), last_version_id, hash_value, file_num));
+    // FIXME: it may not emplace to the hashmap
     // after emplace back, the index become the version_nodes.size()-1
     hash_to_id.insert(hash_value, version_nodes.size()-1);
     // we should check whether there is a last version, if this is the first compaction, there will no
