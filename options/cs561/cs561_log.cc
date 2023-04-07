@@ -16,7 +16,7 @@ void CS561Log::Log(const std::string &content, LogLevel log_level=INFO) {
         log_type = "INFO";
         break;
     case WARNING:
-        log_type = "INFO";
+        log_type = "WARNING";
         break;
     case ERROR:
         log_type = "ERROR";
