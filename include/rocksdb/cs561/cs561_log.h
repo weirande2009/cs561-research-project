@@ -8,11 +8,17 @@ private:
     inline static const std::string RECORD_FILEPATH = "RecordFile";
 
 public:
+    enum LogLevel{
+        INFO,
+        WARNING,
+        ERROR,
+    };
+
     // TODO: Peixu
     /**
      * Log file selection of a certain version
      * @param content content to log
     */
-    static void Log(const std::string& content);
+    static void Log(const std::string& content, LogLevel log_level=INFO);
 
 };

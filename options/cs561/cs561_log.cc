@@ -4,7 +4,7 @@
 #include <iomanip>
 #include <chrono>
 
-void CS561Log::Log(const std::string &content) {
+void CS561Log::Log(const std::string &content, LogLevel log_level=INFO) {
     static std::ofstream f(RECORD_FILEPATH);
 
     const auto now = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
