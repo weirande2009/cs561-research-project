@@ -94,7 +94,8 @@ void LevelVersionForest::AddNode(size_t hash_value, int file_num){
     version_nodes.emplace_back(VersionNode(version_nodes.size(), last_version_id, hash_value, file_num));
     // FIXME: it may not emplace to the hashmap
     // after emplace back, the index become the version_nodes.size()-1
-    hash_to_id.insert(hash_value, version_nodes.size()-1);
+    // hash_to_id.insert(hash_value, version_nodes.size()-1);
+    hash_to_id[hash_value] = version_nodes.size()-1;
     // we should check whether there is a last version, if this is the first compaction, there will no
     // last version and we should not set the index
     if(last_version_id != std::numeric_limits<size_t>::max()){

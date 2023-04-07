@@ -1,7 +1,6 @@
 #pragma once
 
 #include "db/version_set.h"
-#include "db/compaction/compaction.h"
 #include "rocksdb/cs561/picking_history_collector.h"
 
 namespace ROCKSDB_NAMESPACE {
@@ -27,7 +26,7 @@ public:
      * @param input_files contains the information of files chosen to compact in each level
      * @param version_storage_info contains the current version of files for each level
     */
-    void RecordCompaction(const std::vector<CompactionInputFiles>& input_files, const rocksdb::VersionStorageInfo& version_storage_info);
+    // void RecordCompaction(const std::vector<CompactionInputFiles>& input_files, const rocksdb::VersionStorageInfo& version_storage_info);
 
     /**
      * according to the current file version, choose a new file as the first file
