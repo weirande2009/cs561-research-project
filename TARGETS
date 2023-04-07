@@ -167,6 +167,7 @@ cpp_library_wrapper(name="rocksdb_lib", srcs=[
         "options/cs561/file_serializer.cc",
         "options/cs561/picking_history_collector.cc",
         "options/cs561/version_forests.cc",
+        "options/cs561/cs561_log.cc",
         "port/port_posix.cc",
         "port/stack_trace.cc",
         "port/win/env_default.cc",

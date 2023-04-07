@@ -56,7 +56,7 @@ std::string PickingHistoryCollector::serialize_Fsize_vec(const std::vector<ROCKS
 }
 
 void PickingHistoryCollector::recover_from_file() {
-    std::ifstream f(DUMP_FILEPATH1);
+    std::ifstream f(DUMP_FILEPATH_LEVEL0);
     m_history.clear();
 
     std::string s;
@@ -78,7 +78,7 @@ void PickingHistoryCollector::recover_from_file() {
 }
 
 void PickingHistoryCollector::dump_to_file() {
-    std::ofstream f(DUMP_FILEPATH1);
+    std::ofstream f(DUMP_FILEPATH_LEVEL0);
 
     for (const auto& [hash_value, indexes]: m_history) {
         f << hash_value << endl;
@@ -113,13 +113,5 @@ VersionForests& PickingHistoryCollector::GetVersionForests(){
 //void PickingHistoryCollector::LogSelection(size_t hash_value, int index, size_t WA) {
 //    // FIXME: ignored
 //}
-
-void PickingHistoryCollector::Log(const std::string &content) {
-    static std::ofstream f(RECORD_FILEPATH);
-
-    const auto now = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
-    const auto local_time = std::localtime(&now);
-    f << std::put_time(local_time, "%Y-%m-%d %H:%M:%S") << " --- " << content << std::endl;
-}
 
 } // namespace ROCKSDB_NAMESPACE

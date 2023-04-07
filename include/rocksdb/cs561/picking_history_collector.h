@@ -24,11 +24,11 @@ private:
     std::unordered_map<size_t, std::set<int>> m_history;
 
     /******* variables above maybe deprecated *******/ 
-    inline static const std::string DUMP_FILEPATH1 = "DumpFile1";
-    inline static const std::string DUMP_FILEPATH2 = "DumpFile2";
+    inline static const std::string DUMP_FILEPATH_LEVEL0 = "history/DumpFile0";
+    inline static const std::string DUMP_FILEPATH_LEVEL1 = "history/DumpFile1";
 
     // this file will record some numerical data
-    inline static const std::string RECORD_FILEPATH = "RecordFile";
+    inline static const std::string RECORD_FILEPATH = "log/RecordFile";
 
     // the version forests which stores the history of all levels
     VersionForests forests;
@@ -61,12 +61,12 @@ private:
 
 public:
     // FIXME: initialize global_min_WA, WA and left_bytes
-    PickingHistoryCollector() : forests(VersionForests({DUMP_FILEPATH1, DUMP_FILEPATH2})){
-        recover_from_file();
+    PickingHistoryCollector() : forests(VersionForests({DUMP_FILEPATH_LEVEL0, DUMP_FILEPATH_LEVEL1})){
+        // recover_from_file();
     }
 
     ~PickingHistoryCollector() {
-        dump_to_file();
+        // dump_to_file();
     }
 
     // Add one selection to history (Maybe later we need to also collect the corresponding WA of this selection)
@@ -123,13 +123,6 @@ public:
 //     * @param index: index of the chosen file
 //    */
 //    void LogSelection(size_t hash_value, int index, size_t WA);
-
-    // TODO: Peixu
-    /**
-     * Log file selection of a certain version
-     * @param content content to log
-    */
-    static void Log(const std::string& content);
 
     /**
      * Get forests

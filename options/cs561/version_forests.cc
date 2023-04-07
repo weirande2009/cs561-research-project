@@ -5,6 +5,7 @@
 #include <cassert>
 
 #include "rocksdb/cs561/version_forests.h"
+#include "rocksdb/cs561/cs561_log.h"
 
 // #include "../../include/rocksdb/cs561/version_forests.h"
 // #include "../../include/rocksdb/cs561/file_serializer.h"

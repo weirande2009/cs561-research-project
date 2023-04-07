@@ -3860,9 +3860,16 @@ void VersionStorageInfo::UpdateFilesByCompactionPri(
                              level0_non_overlapping_, level, &temp);
         break;
       case kEnumerateAll:
-        // Put the collected file at the front
-        AllFilesEnumerator::GetInstance().EnumerateAll(temp, level);
-        std::cout << "kEnumerateAll" << std::endl;
+        if(level == 1){  // only enumerate for the level-1
+          // Put the collected file at the front
+          AllFilesEnumerator::GetInstance().EnumerateAll(temp, level);
+          std::cout << "kEnumerateAll" << std::endl;
+        }
+        else{
+          SortFileByOverlappingRatio(*internal_comparator_, files_[level],
+                                   files_[level + 1], ioptions.clock, level,
+                                   num_non_empty_levels_, options.ttl, &temp);
+        }
         break;
       default:
         assert(false);

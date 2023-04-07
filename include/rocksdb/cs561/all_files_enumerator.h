@@ -36,6 +36,8 @@ public:
     */
     void EnumerateAll(std::vector<Fsize>& temp, int level);
 
+
+
     PickingHistoryCollector& GetCollector();
 };
 
