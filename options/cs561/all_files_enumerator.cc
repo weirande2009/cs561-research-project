@@ -1,11 +1,13 @@
-#include "rocksdb/cs561/all_files_enumerator.h"
+#include "cs561/all_files_enumerator.h"
 
-#include "rocksdb/cs561/cs561_log.h"
+#include "cs561/cs561_log.h"
+
+
 
 namespace ROCKSDB_NAMESPACE {
 
 AllFilesEnumerator::AllFilesEnumerator() : collector(){
-
+    std::cout << "Initialize AllFilesEnumerator" << std::endl;
 }
 
 AllFilesEnumerator::~AllFilesEnumerator() {

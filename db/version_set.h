@@ -62,8 +62,6 @@
 #include "util/coro_utils.h"
 #include "util/hash_containers.h"
 
-#include "rocksdb/cs561/all_files_enumerator.h"
-
 namespace ROCKSDB_NAMESPACE {
 
 namespace log {
@@ -84,8 +82,6 @@ class MergeIteratorBuilder;
 class SystemClock;
 class ManifestTailer;
 class FilePickerMultiGet;
-
-class AllFilesEnumerator;
 
 // VersionEdit is always supposed to be valid and it is used to point at
 // entries in Manifest. Ideally it should not be used as a container to

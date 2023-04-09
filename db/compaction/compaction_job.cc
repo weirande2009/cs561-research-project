@@ -57,7 +57,7 @@
 #include "test_util/sync_point.h"
 #include "util/stop_watch.h"
 
-#include "rocksdb/cs561/all_files_enumerator.h"
+#include "cs561/all_files_enumerator.h"
 
 namespace ROCKSDB_NAMESPACE {
 

@@ -4,8 +4,8 @@
 
 #include <cassert>
 
-#include "rocksdb/cs561/version_forests.h"
-#include "rocksdb/cs561/cs561_log.h"
+#include "cs561/version_forests.h"
+#include "cs561/cs561_log.h"
 
 // #include "../../include/rocksdb/cs561/version_forests.h"
 // #include "../../include/rocksdb/cs561/file_serializer.h"
@@ -48,21 +48,23 @@ std::istream& operator>> (std::istream& is, VersionNode& node) {
 void LevelVersionForest::LoadFromFile() {
     assert(!file_path.empty());
 
-    std::ifstream f(file_path);
+    std::fstream f(file_path);
 
     // version_nodes
     size_t vn_size;
     f >> vn_size;
     VersionNode node{};
     version_nodes.clear();
-    version_nodes.reserve(vn_size);
+    if(version_nodes.size() != 0)
+        version_nodes.reserve(vn_size);
     for (size_t i = 0; i < vn_size; ++i) {
         f >> node;
         version_nodes.emplace_back(std::move(node));
     }
 
     // hash_to_id
-    hash_to_id.reserve(version_nodes.size());
+    if(version_nodes.size() != 0)
+        hash_to_id.reserve(version_nodes.size());
     size_t sz = version_nodes.size();
     for (size_t i = 0; i < sz; ++i) {
         // hash collision is strictly prohibited
@@ -145,6 +147,7 @@ size_t LevelVersionForest::GetCompactionFile(size_t hash_value, int file_num){
 }
 
 LevelVersionForest::LevelVersionForest(const std::string& fp): file_path(fp) {
+    std::cout << "Initialize LevelVersionForest" << std::endl;
     LoadFromFile();
 }
 
@@ -154,8 +157,9 @@ LevelVersionForest::~LevelVersionForest() noexcept {
 
 
 VersionForests::VersionForests(const std::vector<std::string>& level_file_path) {
+    std::cout << "Initialize VersionForests" << std::endl;
     for (const auto& path: level_file_path)
-        level_version_forests.emplace_back(path);
+        level_version_forests.emplace_back(LevelVersionForest(path));
 }
 
 size_t VersionForests::GetCompactionFile(int level, size_t hash_value, int file_num){

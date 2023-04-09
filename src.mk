@@ -158,7 +158,7 @@ LIB_SOURCES =                                                   \
   options/cs561/file_serializer.cc                              \
   options/cs561/picking_history_collector.cc                    \
   options/cs561/version_forests.cc			                        \
-  options/cs561/cs561_log.cc			                        \
+  options/cs561/cs561_log.cc			                              \
   port/port_posix.cc                                            \
   port/win/env_default.cc                                       \
   port/win/env_win.cc                                           \

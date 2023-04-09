@@ -1,7 +1,9 @@
 #pragma once
 
 #include "db/version_set.h"
-#include "rocksdb/cs561/picking_history_collector.h"
+#include "cs561/picking_history_collector.h"
+
+#include <iostream>
 
 namespace ROCKSDB_NAMESPACE {
 
@@ -12,14 +14,13 @@ class AllFilesEnumerator{
 private:
     PickingHistoryCollector collector;
     AllFilesEnumerator();
-
-    static AllFilesEnumerator instance;
+    ~AllFilesEnumerator();
 
 public:
     static AllFilesEnumerator& GetInstance() {
+        static AllFilesEnumerator instance;
         return instance;
     }
-    ~AllFilesEnumerator();
 
     /**
      * Record the current compaction according the version and files chosen to compact
@@ -34,8 +35,6 @@ public:
      * @param level the level of the version
     */
     void EnumerateAll(std::vector<Fsize>& temp, int level);
-
-
 
     PickingHistoryCollector& GetCollector();
 };

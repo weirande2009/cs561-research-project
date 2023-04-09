@@ -1,4 +1,4 @@
-#include "rocksdb/cs561/file_serializer.h"
+#include "cs561/file_serializer.h"
 
 namespace ROCKSDB_NAMESPACE {
 

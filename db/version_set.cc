@@ -75,6 +75,8 @@
 #include "util/string_util.h"
 #include "util/user_comparator_wrapper.h"
 
+#include "cs561/all_files_enumerator.h"
+
 // Generate the regular and coroutine versions of some methods by
 // including version_set_sync_and_async.h twice
 // Macros in the header will expand differently based on whether
@@ -3863,7 +3865,7 @@ void VersionStorageInfo::UpdateFilesByCompactionPri(
         if(level == 1){  // only enumerate for the level-1
           // Put the collected file at the front
           AllFilesEnumerator::GetInstance().EnumerateAll(temp, level);
-          std::cout << "kEnumerateAll" << std::endl;
+          // std::cout << "kEnumerateAll" << std::endl;
         }
         else{
           SortFileByOverlappingRatio(*internal_comparator_, files_[level],

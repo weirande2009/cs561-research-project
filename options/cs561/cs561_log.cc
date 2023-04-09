@@ -1,4 +1,4 @@
-#include "rocksdb/cs561/cs561_log.h"
+#include "cs561/cs561_log.h"
 
 #include <fstream>
 #include <iomanip>
@@ -25,5 +25,6 @@ void CS561Log::Log(const std::string &content, LogLevel log_level) {
         break;
     }
     f << std::put_time(local_time, "%Y-%m-%d %H:%M:%S") << " --- " << "(" << log_type << ")" << content << std::endl;
+    f.flush();
 }
 

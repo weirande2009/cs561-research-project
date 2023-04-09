@@ -1,7 +1,7 @@
 #include <fstream>
 #include <iomanip>
 
-#include "rocksdb/cs561/picking_history_collector.h"
+#include "cs561/picking_history_collector.h"
 
 using std::endl;
 

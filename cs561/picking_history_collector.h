@@ -8,8 +8,8 @@
 //#include "version_set.h"
 #include "db/version_edit.h"
 
-#include "rocksdb/cs561/file_serializer.h"
-#include "rocksdb/cs561/version_forests.h"
+#include "cs561/file_serializer.h"
+#include "cs561/version_forests.h"
 
 namespace ROCKSDB_NAMESPACE {
 
