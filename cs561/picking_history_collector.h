@@ -24,8 +24,8 @@ private:
     std::unordered_map<size_t, std::set<int>> m_history;
 
     /******* variables above maybe deprecated *******/ 
-    inline static const std::string DUMP_FILEPATH_LEVEL0 = "history/DumpFile0";
-    inline static const std::string DUMP_FILEPATH_LEVEL1 = "history/DumpFile1";
+    inline static const std::string DUMP_FILEPATH_LEVEL0 = "history/picking_history_level0";
+    inline static const std::string DUMP_FILEPATH_LEVEL1 = "history/picking_history_level1";
 
     // this file will record some numerical data
     inline static const std::string RECORD_FILEPATH = "log/RecordFile";

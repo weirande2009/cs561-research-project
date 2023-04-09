@@ -55,7 +55,7 @@ void LevelVersionForest::LoadFromFile() {
     f >> vn_size;
     VersionNode node{};
     version_nodes.clear();
-    if(version_nodes.size() != 0)
+    if(vn_size != 0)
         version_nodes.reserve(vn_size);
     for (size_t i = 0; i < vn_size; ++i) {
         f >> node;
