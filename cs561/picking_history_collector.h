@@ -28,12 +28,17 @@ private:
     inline static const std::string DUMP_FILEPATH_LEVEL1 = "history/picking_history_level1";
 
     // this file will record some numerical data
-    inline static const std::string RECORD_FILEPATH = "log/RecordFile";
+    inline static const std::string RESULT_FILEPATH = "result/result.txt";
+
+    // this file will record the minimal WA so far
+    inline static const std::string MINIMUM_FILEPATH = "result/minimum.txt";
+
+    // file for log
+    inline static const std::string LOG_FILEPATH = "log/log.txt";
 
     // the version forests which stores the history of all levels
     VersionForests forests;
 
-    // FIXME: should we save this?
     // current global minimum WA
     size_t global_min_WA;
 
@@ -62,11 +67,11 @@ private:
 public:
     // FIXME: initialize global_min_WA, WA and left_bytes
     PickingHistoryCollector() : forests(VersionForests({DUMP_FILEPATH_LEVEL0, DUMP_FILEPATH_LEVEL1})){
-        // recover_from_file();
+        
     }
 
     ~PickingHistoryCollector() {
-        // dump_to_file();
+        DumpToFile();
     }
 
     // Add one selection to history (Maybe later we need to also collect the corresponding WA of this selection)
@@ -128,6 +133,11 @@ public:
      * Get forests
     */
     VersionForests& GetVersionForests();
+
+    /**
+     * Dump all record to files
+    */
+    void DumpToFile();
 
 };
 

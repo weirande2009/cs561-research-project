@@ -5,7 +5,7 @@
 #include <chrono>
 
 void CS561Log::Log(const std::string &content, LogLevel log_level) {
-    static std::ofstream f(RECORD_FILEPATH);
+    static std::ofstream f(RECORD_FILEPATH, std::ios::app);
     const auto now = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
     const auto local_time = std::localtime(&now);
     std::string log_type;
@@ -28,3 +28,23 @@ void CS561Log::Log(const std::string &content, LogLevel log_level) {
     f.flush();
 }
 
+void CS561Log::LogResult(size_t WA){
+    static std::ofstream f(RESULT_FILEPATH, std::ios::app);
+    const auto now = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+    const auto local_time = std::localtime(&now);
+    f << std::put_time(local_time, "%Y-%m-%d %H:%M:%S") << " --- " << WA << std::endl;
+    f.flush();
+}
+
+void CS561Log::LogMinumum(size_t WA){
+    static std::ofstream f(MINIMUM_FILEPATH);
+    f << WA << std::endl;
+    f.flush();
+}
+
+size_t CS561Log::LoadMinumum(){
+    std::ifstream f(MINIMUM_FILEPATH);
+    size_t wa;
+    f >> wa;
+    return wa;
+}

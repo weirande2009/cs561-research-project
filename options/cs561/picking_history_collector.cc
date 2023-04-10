@@ -2,6 +2,7 @@
 #include <iomanip>
 
 #include "cs561/picking_history_collector.h"
+#include "cs561/cs561_log.h"
 
 using std::endl;
 
@@ -113,5 +114,14 @@ VersionForests& PickingHistoryCollector::GetVersionForests(){
 //void PickingHistoryCollector::LogSelection(size_t hash_value, int index, size_t WA) {
 //    // FIXME: ignored
 //}
+
+void PickingHistoryCollector::DumpToFile(){
+    // dump wa
+    CS561Log::LogResult(WA);
+    // compute minimum WA
+    global_min_WA = std::min(global_min_WA, WA);
+    // dump minimum
+    CS561Log::LogMinumum(global_min_WA);
+}
 
 } // namespace ROCKSDB_NAMESPACE

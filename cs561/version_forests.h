@@ -60,10 +60,6 @@ private:
     // load forest from file
     void LoadFromFile();
 
-    // TODO: Peixu
-    // dump forest to file
-    void DumpToFile();
-
     // TODO: Ran
     // add when doesn't exist the version node of the hash value
     // this will only happen when 
@@ -85,6 +81,10 @@ public:
     */
     size_t GetCompactionFile(size_t hash_value, int file_num);
 
+    // TODO: Peixu
+    // dump forest to file
+    void DumpToFile();
+
 };
 
 // Contain forests for each level
@@ -105,6 +105,9 @@ public:
     // TODO: Ran
     // get the index of the file in the current version of a certain level
     size_t GetCompactionFile(int level, size_t hash_value, int file_num);
+
+    // Dump to file
+    void DumpToFile();
 };
 
 

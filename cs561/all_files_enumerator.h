@@ -12,7 +12,14 @@ class PickingHistoryCollector;
 
 class AllFilesEnumerator{
 private:
+    // record the last version of of each level, if the version remains
+    // unchanged, there is no compaction happening in this level, so
+    // we don't need to do anything to this level
+    std::vector<std::size_t> last_version;
+
+    // history collector
     PickingHistoryCollector collector;
+    
     AllFilesEnumerator();
     ~AllFilesEnumerator();
 
@@ -36,7 +43,16 @@ public:
     */
     void EnumerateAll(std::vector<Fsize>& temp, int level);
 
+    /**
+     * get the object of picking history collector
+    */
     PickingHistoryCollector& GetCollector();
+
+    /**
+     * terminate the program and do some collecting work
+    */
+    void Terminate();
+
 };
 
 }  // namespace ROCKSDB_NAMESPACE

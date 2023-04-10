@@ -11,7 +11,7 @@
 // #include "../../include/rocksdb/cs561/file_serializer.h"
 
 std::ostream& operator<< (std::ostream& os, const VersionNode& node) {
-    static const std::string DELIM_COMMA = ",";
+    static const std::string DELIM_COMMA = " ";
 
     os << node.id << DELIM_COMMA <<
        node.parent_id << DELIM_COMMA <<
@@ -73,7 +73,7 @@ void LevelVersionForest::LoadFromFile() {
 }
 
 void LevelVersionForest::DumpToFile() {
-    static const std::string DELIM_COMMA = ",";
+    static const std::string DELIM_COMMA = " ";
 
     assert(!file_path.empty());
 
@@ -81,7 +81,7 @@ void LevelVersionForest::DumpToFile() {
 
     // version_nodes
     size_t vn_size = version_nodes.size();
-    f << vn_size << DELIM_COMMA;
+    f << vn_size << std::endl;
     for (const auto& vn: version_nodes) {
         f << vn;
     }
@@ -142,7 +142,9 @@ size_t LevelVersionForest::GetCompactionFile(size_t hash_value, int file_num){
         // add child, use long max as temporary id
         version_nodes[index].chosen_children.push_back(std::numeric_limits<size_t>::max());
     }
-
+    // set the last version
+    last_version_id = index;
+    
     return compaction_file_index;
 }
 
@@ -166,5 +168,9 @@ size_t VersionForests::GetCompactionFile(int level, size_t hash_value, int file_
     return level_version_forests[level].GetCompactionFile(hash_value, file_num);
 }
 
-
+void VersionForests::DumpToFile(){
+    for(auto& lvf: level_version_forests){
+        lvf.DumpToFile();
+    }
+}
 
