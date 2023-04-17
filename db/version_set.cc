@@ -3862,16 +3862,17 @@ void VersionStorageInfo::UpdateFilesByCompactionPri(
                              level0_non_overlapping_, level, &temp);
         break;
       case kEnumerateAll:
-        if(level == 1){  // only enumerate for the level-1
-          // Put the collected file at the front
-          AllFilesEnumerator::GetInstance().EnumerateAll(temp, level);
-          // std::cout << "kEnumerateAll" << std::endl;
-        }
-        else{
-          SortFileByOverlappingRatio(*internal_comparator_, files_[level],
-                                   files_[level + 1], ioptions.clock, level,
-                                   num_non_empty_levels_, options.ttl, &temp);
-        }
+        // do nothing
+        // if(level == 1){  // only enumerate for the level-1
+        //   // Put the collected file at the front
+        //   AllFilesEnumerator::GetInstance().EnumerateAll(temp, level);
+        //   // std::cout << "kEnumerateAll" << std::endl;
+        // }
+        // else{
+        //   SortFileByOverlappingRatio(*internal_comparator_, files_[level],
+        //                            files_[level + 1], ioptions.clock, level,
+        //                            num_non_empty_levels_, options.ttl, &temp);
+        // }
         break;
       default:
         assert(false);
@@ -6914,6 +6915,29 @@ uint64_t ReactiveVersionSet::TEST_read_edits_in_atomic_group() const {
 std::vector<VersionEdit>& ReactiveVersionSet::replay_buffer() {
   assert(manifest_tailer_);
   return manifest_tailer_->GetReadBuffer().replay_buffer();
+}
+
+void VersionStorageInfo::PickUnselectedFile(){
+  const int level = 1;
+  const std::vector<FileMetaData*>& files = files_[level];
+  auto& files_by_compaction_pri = files_by_compaction_pri_[level];
+  assert(files_by_compaction_pri.size() == 0);
+
+  // populate a temp vector for sorting based on size
+  std::vector<Fsize> temp(files.size());
+  for (size_t i = 0; i < files.size(); i++) {
+    temp[i].index = i;
+    temp[i].file = files[i];
+  }
+  // choose an unselected file and put it to the first place
+  AllFilesEnumerator::GetInstance().EnumerateAll(temp, level);
+  assert(temp.size() == files.size());
+  // initialize files_by_compaction_pri_
+  for (size_t i = 0; i < temp.size(); i++) {
+    files_by_compaction_pri.push_back(static_cast<int>(temp[i].index));
+  }
+  next_file_to_compact_by_size_[level] = 0;
+  assert(files_[level].size() == files_by_compaction_pri_[level].size());
 }
 
 }  // namespace ROCKSDB_NAMESPACE

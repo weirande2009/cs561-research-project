@@ -726,9 +726,17 @@ bool LevelCompactionBuilder::PickFileToCompact() {
   if (TryPickL0TrivialMove()) {
     return true;
   }
+  
+  // WEI RAN
+  // if the start_level is L1 and output_level is L2, we use our AllFilesEnumerator
+  // to put an unselected file to the first place
+  if(start_level_ == 1 && output_level_ == 2){
+    vstorage_->PickUnselectedFile();
+  }
 
   const std::vector<FileMetaData*>& level_files =
       vstorage_->LevelFiles(start_level_);
+
 
   // Pick the file with the highest score in this level that is not already
   // being compacted.
