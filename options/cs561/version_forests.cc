@@ -81,7 +81,7 @@ void LevelVersionForest::DumpToFile() {
 
     // version_nodes
     size_t vn_size = version_nodes.size();
-    f << vn_size << std::endl;
+    f << vn_size << DELIM_COMMA;
     for (const auto& vn: version_nodes) {
         f << vn;
     }
@@ -144,7 +144,7 @@ size_t LevelVersionForest::GetCompactionFile(size_t hash_value, int file_num){
     }
     // set the last version
     last_version_id = index;
-    
+
     return compaction_file_index;
 }
 
