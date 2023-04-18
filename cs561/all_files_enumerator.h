@@ -53,6 +53,11 @@ public:
     */
     void Terminate();
 
+    /**
+     * Check whether current WA is larger than global min and terminate if so.
+    */
+    void pruning();
+
 };
 
 }  // namespace ROCKSDB_NAMESPACE

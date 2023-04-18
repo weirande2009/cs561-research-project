@@ -103,8 +103,8 @@ bool PickingHistoryCollector::CheckContinue() {
     return (WA + left_bytes) < global_min_WA;
 }
 
-void PickingHistoryCollector::UpdateLeftBytes(size_t dec) {
-    left_bytes -= dec;
+void PickingHistoryCollector::UpdateLeftBytes(size_t new_left_bytes) {
+    left_bytes = new_left_bytes;
 }
 
 VersionForests& PickingHistoryCollector::GetVersionForests(){
@@ -121,7 +121,7 @@ void PickingHistoryCollector::DumpToFile(){
     // compute minimum WA
     global_min_WA = std::min(global_min_WA, WA);
     // dump minimum
-    CS561Log::LogMinumum(global_min_WA);
+    CS561Log::LogMinimum(global_min_WA);
 }
 
 } // namespace ROCKSDB_NAMESPACE

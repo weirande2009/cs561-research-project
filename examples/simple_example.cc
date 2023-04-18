@@ -98,6 +98,8 @@ void runWorkload(Options& op, WriteOptions& write_op, ReadOptions& read_op) {
 //        exit(0);
 //    }
 
+    AllFilesEnumerator::GetInstance().GetCollector().UpdateLeftBytes(workload_size);
+
     Iterator* it = db->NewIterator(read_op); // for range reads
     uint64_t counter = 0; // for progress bar
 

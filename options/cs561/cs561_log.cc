@@ -36,13 +36,13 @@ void CS561Log::LogResult(size_t WA){
     f.flush();
 }
 
-void CS561Log::LogMinumum(size_t WA){
+void CS561Log::LogMinimum(size_t WA){
     static std::ofstream f(MINIMUM_FILEPATH);
     f << WA << std::endl;
     f.flush();
 }
 
-size_t CS561Log::LoadMinumum(){
+size_t CS561Log::LoadMinimum(){
     std::ifstream f(MINIMUM_FILEPATH);
     size_t wa;
     f >> wa;

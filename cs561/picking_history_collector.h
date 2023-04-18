@@ -69,6 +69,8 @@ public:
     // FIXME: initialize global_min_WA, WA and left_bytes
     PickingHistoryCollector() : forests(VersionForests({DUMP_FILEPATH_LEVEL0, DUMP_FILEPATH_LEVEL1})){
         global_min_WA = CS561Log::LoadMinimum();
+        WA = size_t(0);
+        left_bytes = size_t(0);
     }
 
     ~PickingHistoryCollector() {
