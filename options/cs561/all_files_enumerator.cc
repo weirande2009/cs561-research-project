@@ -10,6 +10,7 @@ AllFilesEnumerator::AllFilesEnumerator() :
     last_version(std::vector<std::size_t>(2, std::numeric_limits<size_t>::max())),
     collector(){
     std::cout << "Initialize AllFilesEnumerator" << std::endl;
+    CS561Log::Log("==================================================");
 }
 
 AllFilesEnumerator::~AllFilesEnumerator() {
@@ -52,6 +53,10 @@ void AllFilesEnumerator::Terminate(){
     collector.GetVersionForests().DumpToFile();
     // record WA and minimum in this run
     collector.DumpToFile();
+    // Log
+    CS561Log::Log("Terminate program due to early stop");
+    // Terminate program
+    exit(1);
 }
 
 } // namespace ROCKSDB_NAMESPACE

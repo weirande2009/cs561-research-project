@@ -1,0 +1,10 @@
+1. We record 6 compactions, but in LOG, the sixth compaction only has
+   compacting and there is no compacted.
+2. There is only about 4 files in L1 when compaction is triggered.
+3. There is still some randomness in the process. In our experiments, when 
+   the 7th compaction sometimes happens and sometimes not.
+4. Before every enumeration, we should clear files_by_compaction_pri. Can we?
+
+
+# 3. The files in L1 is different when the first compaction is triggered
+

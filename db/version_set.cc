@@ -6921,7 +6921,10 @@ void VersionStorageInfo::PickUnselectedFile(){
   const int level = 1;
   const std::vector<FileMetaData*>& files = files_[level];
   auto& files_by_compaction_pri = files_by_compaction_pri_[level];
+  // we should clear files_by_compaction_pri
+  files_by_compaction_pri.clear();
   assert(files_by_compaction_pri.size() == 0);
+  // std::cout << files_by_compaction_pri.size() << std::endl;
 
   // populate a temp vector for sorting based on size
   std::vector<Fsize> temp(files.size());

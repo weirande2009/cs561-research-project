@@ -34,9 +34,16 @@ struct VersionNode{
     // in case of there is not compaction on it
     bool is_leaf{};
 
+    // tag for whether we have enumerate all possibilities after this version
+    bool fully_enumerated{};
+
     VersionNode() = default;
 
-    VersionNode(size_t id_, size_t parent_id_, size_t hash_value_, int file_num_) : id(id_), parent_id(parent_id_), hash_value(hash_value_), file_num(file_num_) {}
+    VersionNode(size_t id_, size_t parent_id_, size_t hash_value_, int file_num_) : 
+        id(id_), 
+        parent_id(parent_id_), 
+        hash_value(hash_value_), 
+        file_num(file_num_) {}
 
     friend std::ostream& operator<< (std::ostream& os, const VersionNode& node);
 
