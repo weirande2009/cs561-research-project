@@ -33,11 +33,11 @@ public:
      * Record the minimum WA so far
      * @param WA minimum write amplification so far
     */
-    static void LogMinumum(size_t WA);
+    static void LogMinimum(size_t WA);
 
     /**
      * Load minimum WA so far
     */
-    static size_t LoadMinumum();
+    static size_t LoadMinimum();
 
 };

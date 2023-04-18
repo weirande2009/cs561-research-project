@@ -59,4 +59,12 @@ void AllFilesEnumerator::Terminate(){
     exit(1);
 }
 
+void AllFilesEnumerator::pruning(){
+    // Check whether current WA already exceeds global min
+    if (!collector.CheckContinue()) {
+        CS561Log::Log("Current WA already exceeds the global minimum");
+        Terminate();
+    }
+}
+
 } // namespace ROCKSDB_NAMESPACE

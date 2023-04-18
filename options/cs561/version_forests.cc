@@ -86,7 +86,7 @@ void LevelVersionForest::DumpToFile() {
 
     // version_nodes
     size_t vn_size = version_nodes.size();
-    f << vn_size << DELIM_COMMA;
+    f << vn_size << DELIM_COMMA << std::endl;
     for (const auto& vn: version_nodes) {
         f << vn;
     }
