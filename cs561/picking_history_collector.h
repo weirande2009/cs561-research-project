@@ -10,6 +10,7 @@
 
 #include "cs561/file_serializer.h"
 #include "cs561/version_forests.h"
+#include "cs561/cs561_log.h"
 
 namespace ROCKSDB_NAMESPACE {
 
@@ -67,7 +68,7 @@ private:
 public:
     // FIXME: initialize global_min_WA, WA and left_bytes
     PickingHistoryCollector() : forests(VersionForests({DUMP_FILEPATH_LEVEL0, DUMP_FILEPATH_LEVEL1})){
-        
+        global_min_WA = CS561Log::LoadMinimum();
     }
 
     ~PickingHistoryCollector() {
