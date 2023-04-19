@@ -19,6 +19,9 @@ private:
 
     // history collector
     PickingHistoryCollector collector;
+
+    // whether this enumerator is activated
+    bool activated;
     
     AllFilesEnumerator();
     ~AllFilesEnumerator();
@@ -56,7 +59,11 @@ public:
     /**
      * Check whether current WA is larger than global min and terminate if so.
     */
-    void pruning();
+    void Pruning();
+
+    bool Activated();
+
+    void SetActivated(bool b);
 
 };
 

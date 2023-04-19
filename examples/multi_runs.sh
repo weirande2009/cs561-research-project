@@ -1,5 +1,7 @@
-for i in {1..10}
+for i in {1..20}
 do
-    rm -rf /tmp/cs561_project1/
+    echo 'run' $i
+    # rm -rf /mnt/ramdisk/cs561_project1/
+    rm -rf /tmp/cs561_project1
     ./simple_example
 done

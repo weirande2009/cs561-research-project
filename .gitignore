@@ -99,3 +99,7 @@ third-party/folly/
 
 examples/workload.txt
 examples/log/
+examples/tmp/
+examples/history/
+examples/result/
+

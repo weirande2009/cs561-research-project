@@ -8,7 +8,8 @@ namespace ROCKSDB_NAMESPACE {
 
 AllFilesEnumerator::AllFilesEnumerator() : 
     last_version(std::vector<std::size_t>(2, std::numeric_limits<size_t>::max())),
-    collector(){
+    collector(),
+    activated(false) {
     std::cout << "Initialize AllFilesEnumerator" << std::endl;
     CS561Log::Log("==================================================");
 }
@@ -59,12 +60,24 @@ void AllFilesEnumerator::Terminate(){
     exit(1);
 }
 
-void AllFilesEnumerator::pruning(){
+void AllFilesEnumerator::Pruning(){
     // Check whether current WA already exceeds global min
     if (!collector.CheckContinue()) {
+        // Set the current version to be fully enumerated (not need to explore further)
+        collector.GetVersionForests().GetLevelVersionForest(1).SetCurrentVersionFullyEnumerated();
+        // set the flag of the current node
         CS561Log::Log("Current WA already exceeds the global minimum");
         Terminate();
     }
 }
+
+bool AllFilesEnumerator::Activated(){
+    return activated;
+}
+
+void AllFilesEnumerator::SetActivated(bool b){
+    activated = b;
+}
+
 
 } // namespace ROCKSDB_NAMESPACE

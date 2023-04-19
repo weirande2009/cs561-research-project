@@ -4,7 +4,9 @@
 3. There is still some randomness in the process. In our experiments, when 
    the 7th compaction sometimes happens and sometimes not.
 4. Before every enumeration, we should clear files_by_compaction_pri. Can we?
-
+5. In the first record of WA, we find that the bytes number of bytes_read_non_output_levels
+   is greater than bytes_written_all.
+6. Now we can only record WA after each compaction but can't record the total written bytes
 
 # 3. The files in L1 is different when the first compaction is triggered
 

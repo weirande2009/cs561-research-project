@@ -42,9 +42,11 @@ private:
 
     // current global minimum WA
     size_t global_min_WA;
+    size_t global_min_WA_corresponding_left_bytes;
 
     // current WA
     size_t WA;
+    size_t WA_corresponding_left_bytes;
 
     // remaining bytes to be inserted
     size_t left_bytes;
@@ -65,12 +67,16 @@ private:
 
     void dump_to_file();
 
+    void PrintCurrentData();
+
 public:
     // FIXME: initialize global_min_WA, WA and left_bytes
     PickingHistoryCollector() : forests(VersionForests({DUMP_FILEPATH_LEVEL0, DUMP_FILEPATH_LEVEL1})){
-        global_min_WA = CS561Log::LoadMinimum();
-        WA = size_t(0);
-        left_bytes = size_t(0);
+        auto p = CS561Log::LoadMinimum();
+        global_min_WA = p.first;
+        global_min_WA_corresponding_left_bytes = p.second;
+        WA = 0;
+        left_bytes = 0;
     }
 
     ~PickingHistoryCollector() {
@@ -141,6 +147,10 @@ public:
      * Dump all record to files
     */
     void DumpToFile();
+
+    void DumpWAResult();
+    
+    void DumpWAMinimum();
 
 };
 

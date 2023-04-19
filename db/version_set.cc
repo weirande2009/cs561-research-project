@@ -6918,6 +6918,9 @@ std::vector<VersionEdit>& ReactiveVersionSet::replay_buffer() {
 }
 
 void VersionStorageInfo::PickUnselectedFile(){
+  if(!AllFilesEnumerator::GetInstance().Activated()){  // if not activated, do nothing
+    return;
+  }
   const int level = 1;
   const std::vector<FileMetaData*>& files = files_[level];
   auto& files_by_compaction_pri = files_by_compaction_pri_[level];

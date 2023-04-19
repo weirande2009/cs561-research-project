@@ -164,6 +164,15 @@ LevelVersionForest::~LevelVersionForest() noexcept {
     DumpToFile();
 }
 
+void LevelVersionForest::SetCurrentVersionFullyEnumerated(){
+    if(last_version_id == std::numeric_limits<size_t>::max()){
+        return;
+    }
+    if(version_nodes[last_version_id].chosen_children.back() != std::numeric_limits<size_t>::max()){
+        int cur_version_id = version_nodes[last_version_id].chosen_children.back();
+        version_nodes[cur_version_id].fully_enumerated = true;
+    }
+}
 
 VersionForests::VersionForests(const std::vector<std::string>& level_file_path) {
     std::cout << "Initialize VersionForests" << std::endl;
@@ -180,4 +189,10 @@ void VersionForests::DumpToFile(){
         lvf.DumpToFile();
     }
 }
+
+LevelVersionForest& VersionForests::GetLevelVersionForest(int level){
+    return level_version_forests[level];
+}
+
+
 

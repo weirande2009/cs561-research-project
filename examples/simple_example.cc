@@ -11,7 +11,28 @@
 #include "cs561/all_files_enumerator.h"
 
 using namespace rocksdb;
+// std::string kDBPath = "/mnt/ramdisk/cs561_project1";
 std::string kDBPath = "/tmp/cs561_project1";
+
+void backgroundJobMayComplete(DB* db) {
+    uint64_t pending_compact;
+    uint64_t pending_compact_bytes;
+    uint64_t running_compact;
+    uint64_t pending_flush;
+    uint64_t running_flush;
+
+    bool success = false; 
+    while (pending_compact || pending_compact_bytes || running_compact
+      || pending_flush || running_flush || !success) {
+        std::this_thread::sleep_for(std::chrono::milliseconds(200));
+        success = db->GetIntProperty("rocksdb.compaction-pending", &pending_compact)
+        && db->GetIntProperty("rocksdb.estimate-pending-compaction-bytes", 
+            &pending_compact_bytes)
+        && db->GetIntProperty("rocksdb.num-running-compactions", &running_compact)
+        && db->GetIntProperty("rocksdb.mem-table-flush-pending", &pending_flush)
+        && db->GetIntProperty("rocksdb.num-running-flushes", &running_flush);
+    }
+}
 
 inline void showProgress(const uint64_t& workload_size, const uint64_t& counter) {
 
@@ -46,7 +67,7 @@ void runWorkload(Options& op, WriteOptions& write_op, ReadOptions& read_op) {
     op.max_bytes_for_level_base = 32 * 1024 * 1024;
 
     // set the compaction strategy
-    op.compaction_pri = kEnumerateAll;
+    op.compaction_pri = kMinOverlappingRatio;
 
     {
         op.memtable_factory = std::shared_ptr<VectorRepFactory>(new VectorRepFactory);
@@ -148,16 +169,21 @@ void runWorkload(Options& op, WriteOptions& write_op, ReadOptions& read_op) {
             break;
         }
 
-        AllFilesEnumerator::GetInstance().GetCollector().UpdateLeftBytes(workload_size - counter);
+        if(workload_size >= counter)
+            AllFilesEnumerator::GetInstance().GetCollector().UpdateLeftBytes(workload_size - counter);
 
         if (workload_size < 100) workload_size = 100;
         if (counter % (workload_size / 100) == 0) {
-            showProgress(workload_size, counter);
+            // showProgress(workload_size, counter);
         }
     }
 
-
     workload_file.close();
+
+    FlushOptions flush_options;
+    db->Flush(flush_options);
+    backgroundJobMayComplete(db);
+
     s = db->Close();
     if (!s.ok()) std::cerr << s.ToString() << std::endl;
     assert(s.ok());
@@ -170,9 +196,15 @@ void runWorkload(Options& op, WriteOptions& write_op, ReadOptions& read_op) {
 
 int main() {
     std::cout << "Start Testing" << std::endl;
+    auto start_time = std::chrono::system_clock::now();
     AllFilesEnumerator::GetInstance();
     Options options;
     WriteOptions write_op;
     ReadOptions read_op;
     runWorkload(options, write_op, read_op);
+
+    auto end_time = std::chrono::system_clock::now();
+    auto durationInSeconds = std::chrono::duration_cast<std::chrono::seconds>(end_time - start_time);
+
+    std::cout << "Total time: " << durationInSeconds.count() << std::endl;
 }

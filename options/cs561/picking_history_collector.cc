@@ -97,10 +97,13 @@ size_t PickingHistoryCollector::FindPickingFile(int level, size_t hash_value) {
 
 void PickingHistoryCollector::UpdateWA(size_t new_WA) {
     WA += new_WA;
+    WA_corresponding_left_bytes = left_bytes;
+    // std::cout << std::endl << "New added WA: " << new_WA << std::endl;
+    // PrintCurrentData();
 }
 
 bool PickingHistoryCollector::CheckContinue() {
-    return (WA + left_bytes) < global_min_WA;
+    return (WA + WA_corresponding_left_bytes) <= (global_min_WA + global_min_WA_corresponding_left_bytes);
 }
 
 void PickingHistoryCollector::UpdateLeftBytes(size_t new_left_bytes) {
@@ -117,11 +120,37 @@ VersionForests& PickingHistoryCollector::GetVersionForests(){
 
 void PickingHistoryCollector::DumpToFile(){
     // dump wa
-    CS561Log::LogResult(WA);
+    CS561Log::LogResult(WA, WA_corresponding_left_bytes);
     // compute minimum WA
-    global_min_WA = std::min(global_min_WA, WA);
-    // dump minimum
-    CS561Log::LogMinimum(global_min_WA);
+    if((WA + WA_corresponding_left_bytes) <= (global_min_WA + global_min_WA_corresponding_left_bytes)){
+        // dump minimum
+        CS561Log::LogMinimum(WA, WA_corresponding_left_bytes);
+    }
+}
+
+void PickingHistoryCollector::DumpWAResult(){
+    // dump wa
+    CS561Log::LogResult(WA, WA_corresponding_left_bytes);
+}
+
+void PickingHistoryCollector::DumpWAMinimum(){
+    // compute minimum WA
+    if((WA + WA_corresponding_left_bytes) <= (global_min_WA + global_min_WA_corresponding_left_bytes)){
+        // dump minimum
+        CS561Log::LogMinimum(WA, WA_corresponding_left_bytes);
+    }
+    else{
+        // dump minimum
+        CS561Log::LogMinimum(global_min_WA, global_min_WA_corresponding_left_bytes);
+    }
+}
+
+
+
+void PickingHistoryCollector::PrintCurrentData(){
+    std::cout << "Current WA: " << WA << std::endl;
+    std::cout << "Gloabl Minimum WA: " << global_min_WA << std::endl;
+    std::cout << "Left Bytes: " << left_bytes << std::endl;
 }
 
 } // namespace ROCKSDB_NAMESPACE

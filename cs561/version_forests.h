@@ -92,6 +92,10 @@ public:
     // dump forest to file
     void DumpToFile();
 
+    /**
+     * Set the current version to be fully enumerated
+    */
+    void SetCurrentVersionFullyEnumerated();
 };
 
 // Contain forests for each level
@@ -115,6 +119,11 @@ public:
 
     // Dump to file
     void DumpToFile();
+
+    /**
+     * Get LevelVersionForest
+    */
+    LevelVersionForest& GetLevelVersionForest(int level);
 };
 
 

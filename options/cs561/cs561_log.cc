@@ -28,23 +28,23 @@ void CS561Log::Log(const std::string &content, LogLevel log_level) {
     f.flush();
 }
 
-void CS561Log::LogResult(size_t WA){
+void CS561Log::LogResult(size_t WA, size_t left_bytes){
     static std::ofstream f(RESULT_FILEPATH, std::ios::app);
     const auto now = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
     const auto local_time = std::localtime(&now);
-    f << std::put_time(local_time, "%Y-%m-%d %H:%M:%S") << " --- " << WA << std::endl;
+    f << std::put_time(local_time, "%Y-%m-%d %H:%M:%S") << " --- " << "write amplification: " << WA << ", left bytes: " << left_bytes << std::endl;
     f.flush();
 }
 
-void CS561Log::LogMinimum(size_t WA){
+void CS561Log::LogMinimum(size_t WA, size_t left_bytes){
     static std::ofstream f(MINIMUM_FILEPATH);
-    f << WA << std::endl;
+    f << WA << " " << left_bytes << std::endl;
     f.flush();
 }
 
-size_t CS561Log::LoadMinimum(){
+std::pair<size_t, size_t> CS561Log::LoadMinimum(){
     std::ifstream f(MINIMUM_FILEPATH);
-    size_t wa;
-    f >> wa;
-    return wa;
+    size_t wa, left_bytes;
+    f >> wa >> left_bytes;
+    return {wa, left_bytes};
 }

@@ -861,8 +861,12 @@ Status CompactionJob::Install(const MutableCFOptions& mutable_cf_options) {
   }
 
   // TODO: Add WA to collector
-  AllFilesEnumerator::GetInstance().GetCollector().UpdateWA(bytes_written_all - bytes_read_non_output_and_blob);
-  AllFilesEnumerator::GetInstance().pruning();
+  if(bytes_written_all >= stats.bytes_read_non_output_levels){
+    AllFilesEnumerator::GetInstance().GetCollector().UpdateWA(bytes_written_all);
+  }
+  if(AllFilesEnumerator::GetInstance().Activated()){
+    AllFilesEnumerator::GetInstance().Pruning();
+  }
 
   const std::string& column_family_name = cfd->GetName();
 

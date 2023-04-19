@@ -26,18 +26,19 @@ public:
     /**
      * Record the total WA for a certain run
      * @param WA write amplification of a run
+     * @param left_bytes left bytes when the WA is recorded
     */
-    static void LogResult(size_t WA);
+    static void LogResult(size_t WA, size_t left_bytes);
 
     /**
      * Record the minimum WA so far
      * @param WA minimum write amplification so far
     */
-    static void LogMinimum(size_t WA);
+    static void LogMinimum(size_t WA, size_t left_bytes);
 
     /**
      * Load minimum WA so far
     */
-    static size_t LoadMinimum();
+    static std::pair<size_t, size_t> LoadMinimum();
 
 };
