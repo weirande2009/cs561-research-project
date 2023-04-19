@@ -68,8 +68,8 @@ void runWorkload(Options& op, WriteOptions& write_op, ReadOptions& read_op) {
 
     // set the compaction strategy
     op.compaction_pri = kEnumerateAll;
-
-    AllFilesEnumerator::GetInstance().SetActivated(true);
+    if(op.compaction_pri == kEnumerateAll)
+        AllFilesEnumerator::GetInstance().SetActivated(true);
 
     {
         op.memtable_factory = std::shared_ptr<VectorRepFactory>(new VectorRepFactory);
