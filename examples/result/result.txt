@@ -1,2 +1,4 @@
 2023-04-19 21:45:17 --- write amplification: 375188335, left bytes: 0 (RoundRobin)
 2023-04-19 21:47:56 --- write amplification: 394775438, left bytes: 0 (MinOverlappingRatio)
+2023-04-19 22:09:35 --- write amplification: 396380542, left bytes: 0
+2023-04-19 22:13:43 --- write amplification: 396359932, left bytes: 0
