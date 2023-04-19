@@ -68,6 +68,7 @@ void runWorkload(Options& op, WriteOptions& write_op, ReadOptions& read_op) {
 
     // set the compaction strategy
     op.compaction_pri = kEnumerateAll;
+
     if(op.compaction_pri == kEnumerateAll)
         AllFilesEnumerator::GetInstance().SetActivated(true);
 
@@ -134,6 +135,7 @@ void runWorkload(Options& op, WriteOptions& write_op, ReadOptions& read_op) {
         switch (instruction)
         {
         case 'I': // insert
+        case 'U': // update
             workload_file >> key >> value;
             // Put key-value
             s = db->Put(write_op, std::to_string(key), value);
@@ -165,7 +167,13 @@ void runWorkload(Options& op, WriteOptions& write_op, ReadOptions& read_op) {
             }
             counter++;
             break;
-
+        case 'D':
+            workload_file >> key;
+            s = db->Delete(write_op, std::to_string(key));
+            if (!s.ok()) std::cerr << s.ToString() << std::endl;
+            assert(s.ok());
+            counter++;
+            break;
         default:
             std::cerr << "ERROR: Case match NOT found !!" << std::endl;
             break;
