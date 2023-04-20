@@ -1,4 +1,4 @@
-for i in {1..60}
+for i in {1..640}
 do
     echo 'run' $i
     # rm -rf /mnt/ramdisk/cs561_project1/

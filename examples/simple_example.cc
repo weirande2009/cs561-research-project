@@ -67,7 +67,7 @@ void runWorkload(Options& op, WriteOptions& write_op, ReadOptions& read_op) {
     op.max_bytes_for_level_base = 32 * 1024 * 1024;
 
     // set the compaction strategy
-    op.compaction_pri = kRoundRobin;
+    op.compaction_pri = kEnumerateAll;
 
     if(op.compaction_pri == kEnumerateAll)
         AllFilesEnumerator::GetInstance().SetActivated(true);
@@ -107,6 +107,7 @@ void runWorkload(Options& op, WriteOptions& write_op, ReadOptions& read_op) {
     // doing a first pass to get the workload size
     uint32_t entry_size = 8;
     uint64_t workload_size = 0;
+    uint64_t insert_update_size = 9000000;
     std::string line;
     while (std::getline(workload_file, line))
         ++workload_size;
@@ -123,7 +124,7 @@ void runWorkload(Options& op, WriteOptions& write_op, ReadOptions& read_op) {
 //        exit(0);
 //    }
 
-    AllFilesEnumerator::GetInstance().GetCollector().UpdateLeftBytes(workload_size*entry_size);
+    AllFilesEnumerator::GetInstance().GetCollector().UpdateLeftBytes(insert_update_size*entry_size);
 
     Iterator* it = db->NewIterator(read_op); // for range reads
     uint64_t counter = 0; // for progress bar
@@ -172,7 +173,6 @@ void runWorkload(Options& op, WriteOptions& write_op, ReadOptions& read_op) {
             s = db->Delete(write_op, key);
             if (!s.ok()) std::cerr << s.ToString() << std::endl;
             assert(s.ok());
-            counter++;
             break;
         default:
             std::cerr << "ERROR: Case match NOT found !!" << std::endl;
@@ -180,7 +180,7 @@ void runWorkload(Options& op, WriteOptions& write_op, ReadOptions& read_op) {
         }
 
         if(workload_size >= counter)
-            AllFilesEnumerator::GetInstance().GetCollector().UpdateLeftBytes((workload_size - counter)*entry_size);
+            AllFilesEnumerator::GetInstance().GetCollector().UpdateLeftBytes((insert_update_size - counter)*entry_size);
 
         if (workload_size < 100) workload_size = 100;
         if (counter % (workload_size / 100) == 0) {
