@@ -53,7 +53,7 @@ void AllFilesEnumerator::Terminate(){
     // Before termination, dump version forests to file
     collector.GetVersionForests().DumpToFile();
     // record WA and minimum in this run
-    collector.DumpToFile();
+    collector.DumpWAResult();
     // Log
     CS561Log::Log("Terminate program due to early stop");
     // Terminate program
