@@ -67,7 +67,7 @@ void runWorkload(Options& op, WriteOptions& write_op, ReadOptions& read_op) {
     op.max_bytes_for_level_base = 32 * 1024 * 1024;
 
     // set the compaction strategy
-    op.compaction_pri = kEnumerateAll;
+    op.compaction_pri = kRoundRobin;
 
     if(op.compaction_pri == kEnumerateAll)
         AllFilesEnumerator::GetInstance().SetActivated(true);
@@ -105,6 +105,7 @@ void runWorkload(Options& op, WriteOptions& write_op, ReadOptions& read_op) {
     workload_file.open("workload.txt");
     assert(workload_file);
     // doing a first pass to get the workload size
+    uint32_t entry_size = 8;
     uint64_t workload_size = 0;
     std::string line;
     while (std::getline(workload_file, line))
@@ -122,15 +123,14 @@ void runWorkload(Options& op, WriteOptions& write_op, ReadOptions& read_op) {
 //        exit(0);
 //    }
 
-    AllFilesEnumerator::GetInstance().GetCollector().UpdateLeftBytes(workload_size);
+    AllFilesEnumerator::GetInstance().GetCollector().UpdateLeftBytes(workload_size*entry_size);
 
     Iterator* it = db->NewIterator(read_op); // for range reads
     uint64_t counter = 0; // for progress bar
 
     while (!workload_file.eof()) {
         char instruction;
-        long key, start_key, end_key;
-        std::string value;
+        std::string value, key, start_key, end_key;
         workload_file >> instruction;
         switch (instruction)
         {
@@ -138,7 +138,7 @@ void runWorkload(Options& op, WriteOptions& write_op, ReadOptions& read_op) {
         case 'U': // update
             workload_file >> key >> value;
             // Put key-value
-            s = db->Put(write_op, std::to_string(key), value);
+            s = db->Put(write_op, key, value);
             if (!s.ok()) std::cerr << s.ToString() << std::endl;
             assert(s.ok());
             counter++;
@@ -146,7 +146,7 @@ void runWorkload(Options& op, WriteOptions& write_op, ReadOptions& read_op) {
 
         case 'Q': // probe: point query
             workload_file >> key;
-            s = db->Get(read_op, std::to_string(key), &value);
+            s = db->Get(read_op, key, &value);
             //if (!s.ok()) std::cerr << s.ToString() << "key = " << key << std::endl;
             // assert(s.ok());
             counter++;
@@ -156,9 +156,9 @@ void runWorkload(Options& op, WriteOptions& write_op, ReadOptions& read_op) {
             workload_file >> start_key >> end_key;
             it->Refresh();
             assert(it->status().ok());
-            for (it->Seek(std::to_string(start_key)); it->Valid(); it->Next()) {
+            for (it->Seek(start_key); it->Valid(); it->Next()) {
                 //std::cout << "found key = " << it->key().ToString() << std::endl;
-                if (it->key().ToString() == std::to_string(end_key)) {
+                if (it->key().ToString() == end_key) {
                     break;
                 }
             }
@@ -169,7 +169,7 @@ void runWorkload(Options& op, WriteOptions& write_op, ReadOptions& read_op) {
             break;
         case 'D':
             workload_file >> key;
-            s = db->Delete(write_op, std::to_string(key));
+            s = db->Delete(write_op, key);
             if (!s.ok()) std::cerr << s.ToString() << std::endl;
             assert(s.ok());
             counter++;
@@ -180,7 +180,7 @@ void runWorkload(Options& op, WriteOptions& write_op, ReadOptions& read_op) {
         }
 
         if(workload_size >= counter)
-            AllFilesEnumerator::GetInstance().GetCollector().UpdateLeftBytes(workload_size - counter);
+            AllFilesEnumerator::GetInstance().GetCollector().UpdateLeftBytes((workload_size - counter)*entry_size);
 
         if (workload_size < 100) workload_size = 100;
         if (counter % (workload_size / 100) == 0) {
