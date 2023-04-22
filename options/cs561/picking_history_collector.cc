@@ -145,8 +145,6 @@ void PickingHistoryCollector::DumpWAMinimum(){
     }
 }
 
-
-
 void PickingHistoryCollector::PrintCurrentData(){
     std::cout << "Current WA: " << WA << std::endl;
     std::cout << "Gloabl Minimum WA: " << global_min_WA << std::endl;

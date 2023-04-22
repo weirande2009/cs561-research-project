@@ -67,7 +67,7 @@ void runWorkload(Options& op, WriteOptions& write_op, ReadOptions& read_op) {
     op.max_bytes_for_level_base = 32 * 1024 * 1024;
 
     // set the compaction strategy
-    op.compaction_pri = kEnumerateAll;
+    op.compaction_pri = kRoundRobin;
 
     if(op.compaction_pri == kEnumerateAll)
         AllFilesEnumerator::GetInstance().SetActivated(true);
