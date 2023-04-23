@@ -72,6 +72,26 @@ void runWorkload(Options& op, WriteOptions& write_op, ReadOptions& read_op) {
     if(op.compaction_pri == kEnumerateAll)
         AllFilesEnumerator::GetInstance().SetActivated(true);
 
+    {
+        op.memtable_factory = std::shared_ptr<VectorRepFactory>(new VectorRepFactory);
+        op.allow_concurrent_memtable_write = false;
+    }
+
+    {
+        //op.memtable_factory = std::shared_ptr<SkipListFactory>(new SkipListFactory);
+    }
+
+    {
+        //op.memtable_factory = std::shared_ptr<MemTableRepFactory>(NewHashSkipListRepFactory());
+        //op.allow_concurrent_memtable_write = false;
+    }
+
+    {
+        //op.memtable_factory = std::shared_ptr<MemTableRepFactory>(NewHashLinkListRepFactory());
+        //op.allow_concurrent_memtable_write = false;
+    }
+
+
     //BlockBasedTableOptions table_options;
     //table_options.block_cache = NewLRUCache(8*1048576);
     //op.table_factory.reset(NewBlockBasedTableFactory(table_options));
