@@ -168,9 +168,9 @@ void LevelVersionForest::SetCurrentVersionFullyEnumerated(){
     if(last_version_id == std::numeric_limits<size_t>::max()){
         return;
     }
-    // current version is the last version's last children
-    size_t cur_version_id = version_nodes[last_version_id].chosen_children.back();
-    if(cur_version_id != std::numeric_limits<size_t>::max()){
+    // current version is the last version's last child
+    if(version_nodes[last_version_id].chosen_children.back() != std::numeric_limits<size_t>::max()){
+        int cur_version_id = version_nodes[last_version_id].chosen_children.back();
         version_nodes[cur_version_id].fully_enumerated = true;
     }
 }
