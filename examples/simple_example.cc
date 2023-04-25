@@ -67,7 +67,7 @@ void runWorkload(Options& op, WriteOptions& write_op, ReadOptions& read_op) {
     op.max_bytes_for_level_base = 32 * 1024 * 1024;
 
     // set the compaction strategy
-    op.compaction_pri = kRoundRobin;
+    op.compaction_pri = kEnumerateAll;
 
     if(op.compaction_pri == kEnumerateAll)
         AllFilesEnumerator::GetInstance().SetActivated(true);
@@ -78,7 +78,7 @@ void runWorkload(Options& op, WriteOptions& write_op, ReadOptions& read_op) {
     }
 
     {
-        //op.memtable_factory = std::shared_ptr<SkipListFactory>(new SkipListFactory);
+        // op.memtable_factory = std::shared_ptr<SkipListFactory>(new SkipListFactory);
     }
 
     {
@@ -108,6 +108,8 @@ void runWorkload(Options& op, WriteOptions& write_op, ReadOptions& read_op) {
     uint32_t entry_size = 8;
     uint64_t workload_size = 0;
     uint64_t insert_update_size = 9000000;
+    uint64_t total_bytes = 0;
+    uint64_t inserted_bytes = 0;
     std::string line;
     while (std::getline(workload_file, line))
         ++workload_size;
@@ -124,7 +126,7 @@ void runWorkload(Options& op, WriteOptions& write_op, ReadOptions& read_op) {
 //        exit(0);
 //    }
 
-    AllFilesEnumerator::GetInstance().GetCollector().UpdateLeftBytes(insert_update_size*entry_size);
+    AllFilesEnumerator::GetInstance().GetCollector().UpdateLeftBytes(total_bytes);
 
     Iterator* it = db->NewIterator(read_op); // for range reads
     uint64_t counter = 0; // for progress bar
@@ -138,6 +140,7 @@ void runWorkload(Options& op, WriteOptions& write_op, ReadOptions& read_op) {
         case 'I': // insert
         case 'U': // update
             workload_file >> key >> value;
+            inserted_bytes += key.length() + value.length();
             // Put key-value
             s = db->Put(write_op, key, value);
             if (!s.ok()) std::cerr << s.ToString() << std::endl;
@@ -180,7 +183,7 @@ void runWorkload(Options& op, WriteOptions& write_op, ReadOptions& read_op) {
         }
 
         if(insert_update_size >= counter)
-            AllFilesEnumerator::GetInstance().GetCollector().UpdateLeftBytes((insert_update_size - counter)*entry_size);
+            AllFilesEnumerator::GetInstance().GetCollector().UpdateLeftBytes(total_bytes-inserted_bytes);
 
         if (workload_size < 100) workload_size = 100;
         if (counter % (workload_size / 100) == 0) {

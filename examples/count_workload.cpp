@@ -12,6 +12,8 @@ int main(){
     unordered_map<char, int> counters;
     int counter = 0;
 
+    size_t total_bytes = 0;
+
     while (!workload_file.eof()) {
         char instruction;
         std::string value, key, start_key, end_key;
@@ -22,6 +24,7 @@ int main(){
         case 'I': // insert
         case 'U': // update
             workload_file >> key >> value;
+            total_bytes += key.length() + value.length();
             break;
 
         case 'Q': // probe: point query
@@ -45,6 +48,6 @@ int main(){
     for(auto& p: counters){
         cout << "Operation " << p.first << ": " << p.second << endl;
     }
-
+    cout << "Total bytes: " << total_bytes << endl;
     return 0;
 }

@@ -1,0 +1,24 @@
+Method
+1. Pipeline (Ran)
+2. Recording versions (Peixu)
+    a) Version Node
+    b) Version Forest
+    c) Storing and Loading
+3. Enumerating all files (Ran)
+4. Pruning (Chen)
+5. Logging (Chen)
+
+Experiment
+(overview)
+1. Baseline (Chen)
+    a) RoundRobin
+    b) MinOverlappingRatio
+2. Results
+    a) 
+
+Conclusion
+
+Future Work
+
+
+

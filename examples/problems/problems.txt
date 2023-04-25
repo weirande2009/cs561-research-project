@@ -10,3 +10,5 @@
 
 # 3. The files in L1 is different when the first compaction is triggered
 
+4/24
+1. when use skiplist as the memory table, the WA goes up
