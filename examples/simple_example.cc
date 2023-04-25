@@ -182,7 +182,8 @@ void runWorkload(Options& op, WriteOptions& write_op, ReadOptions& read_op) {
             break;
         }
 
-        AllFilesEnumerator::GetInstance().GetCollector().UpdateLeftBytes(total_bytes-inserted_bytes);
+        if (total_bytes > inserted_bytes)
+            AllFilesEnumerator::GetInstance().GetCollector().UpdateLeftBytes(total_bytes-inserted_bytes);
 
         if (workload_size < 100) workload_size = 100;
         if (counter % (workload_size / 100) == 0) {
