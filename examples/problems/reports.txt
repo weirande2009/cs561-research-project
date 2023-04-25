@@ -15,7 +15,6 @@ Experiment
     b) MinOverlappingRatio
 2. Results
     a) figures (Peixu)
-        -
     b) analysis (Ran)
     c) comparation (Ran)
 

@@ -64,10 +64,10 @@ void runWorkload(Options& op, WriteOptions& write_op, ReadOptions& read_op) {
     op.target_file_size_base = 8 * 1024 * 1024;
     op.level0_file_num_compaction_trigger = 4;
     op.max_bytes_for_level_multiplier = 10;
-    op.max_bytes_for_level_base = 32 * 1024 * 1024;
+    op.max_bytes_for_level_base = 64 * 1024 * 1024;
 
     // set the compaction strategy
-    op.compaction_pri = kEnumerateAll;
+    op.compaction_pri = kRoundRobin;
 
     if(op.compaction_pri == kEnumerateAll)
         AllFilesEnumerator::GetInstance().SetActivated(true);
@@ -108,7 +108,7 @@ void runWorkload(Options& op, WriteOptions& write_op, ReadOptions& read_op) {
     uint32_t entry_size = 8;
     uint64_t workload_size = 0;
     uint64_t insert_update_size = 9000000;
-    uint64_t total_bytes = 0;
+    uint64_t total_bytes = 274824076;
     uint64_t inserted_bytes = 0;
     std::string line;
     while (std::getline(workload_file, line))
@@ -182,8 +182,7 @@ void runWorkload(Options& op, WriteOptions& write_op, ReadOptions& read_op) {
             break;
         }
 
-        if(insert_update_size >= counter)
-            AllFilesEnumerator::GetInstance().GetCollector().UpdateLeftBytes(total_bytes-inserted_bytes);
+        AllFilesEnumerator::GetInstance().GetCollector().UpdateLeftBytes(total_bytes-inserted_bytes);
 
         if (workload_size < 100) workload_size = 100;
         if (counter % (workload_size / 100) == 0) {
