@@ -68,6 +68,7 @@ void runWorkload(Options& op, WriteOptions& write_op, ReadOptions& read_op) {
 
     // set the compaction strategy
     op.compaction_pri = kRoundRobin;
+    uint64_t total_bytes = 247342316;
 
     if(op.compaction_pri == kEnumerateAll)
         AllFilesEnumerator::GetInstance().SetActivated(true);
@@ -108,7 +109,6 @@ void runWorkload(Options& op, WriteOptions& write_op, ReadOptions& read_op) {
     uint32_t entry_size = 8;
     uint64_t workload_size = 0;
     uint64_t insert_update_size = 9000000;
-    uint64_t total_bytes = 274824076;
     uint64_t inserted_bytes = 0;
     std::string line;
     while (std::getline(workload_file, line))
