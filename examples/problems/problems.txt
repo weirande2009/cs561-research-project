@@ -12,3 +12,7 @@
 
 4/24
 1. when use skiplist as the memory table, the WA goes up
+
+4/26
+1. When I choose the same file to compaction, there can be different versions when the next compaction
+   is triggered.

@@ -102,4 +102,5 @@ examples/history/
 examples/result/
 examples/log/
 examples/tmp/
-
+examples/code/
+optimal_compaction_strategy

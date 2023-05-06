@@ -7,9 +7,6 @@
 #include "cs561/version_forests.h"
 #include "cs561/cs561_log.h"
 
-// #include "../../include/rocksdb/cs561/version_forests.h"
-// #include "../../include/rocksdb/cs561/file_serializer.h"
-
 std::ostream& operator<< (std::ostream& os, const VersionNode& node) {
     static const std::string DELIM_COMMA = " ";
 
@@ -70,10 +67,6 @@ void LevelVersionForest::LoadFromFile() {
     std::cout << "loaded node number: " << sz << std::endl;
     for (size_t i = 0; i < sz; ++i) {
         hash_to_id[version_nodes[i].hash_value] = i;
-        // std::cout << version_nodes[i].hash_value << " " << i << std::endl;
-        // hash collision is strictly prohibited
-        // assert(hash_to_id.try_emplace(version_nodes[i].hash_value, i).second);
-        // std::cout << hash_to_id[version_nodes[i].hash_value] << std::endl;
     }
 }
 
@@ -119,6 +112,11 @@ size_t LevelVersionForest::GetCompactionFile(size_t hash_value, int file_num){
         AddNode(hash_value, file_num);
     }
     size_t index = hash_to_id[hash_value];
+    if(last_version_id != std::numeric_limits<size_t>::max()){
+        assert(!version_nodes[last_version_id].chosen_children.empty());
+        // update the index of the new node to the children of last node
+        version_nodes[last_version_id].chosen_children.back() = index;
+    }
     // iterate the file that has been selected and check whether the children node
     // has already iterate over all its files. If not, find the best as the compaction
     // file
@@ -194,6 +192,3 @@ void VersionForests::DumpToFile(){
 LevelVersionForest& VersionForests::GetLevelVersionForest(int level){
     return level_version_forests[level];
 }
-
-
-

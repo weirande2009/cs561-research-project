@@ -63,10 +63,6 @@ private:
      */
     static std::string serialize_Fsize_vec(const std::vector<Fsize>& temp);
 
-    void recover_from_file();
-
-    void dump_to_file();
-
     void PrintCurrentData();
 
 public:
@@ -83,32 +79,7 @@ public:
         DumpToFile();
     }
 
-    // Add one selection to history (Maybe later we need to also collect the corresponding WA of this selection)
-    // @param temp: the current file version
-    // @param index: the index of the file that is selected
-    void AddPickingFile(const std::vector<ROCKSDB_NAMESPACE::Fsize> &temp, int index);
-
-    void AddPickingFile(size_t hash_value, int index);
-
-    // Check whether the index of the current file version is in the history
-    // @param temp: the current file version
-    // @param index: the index of the file that is going to be checked
-    // @return: true if the index is in the history, false otherwise
-    bool IsInHistory(const std::vector<ROCKSDB_NAMESPACE::Fsize> &temp, int index);
-
-    bool IsInHistory(size_t hash_value, int index);
-
     /******* functions above maybe deprecated *******/ 
-
-    // TODO: Chen
-    /**
-     * Find a file index in the current level to compact
-     * @param level: the level of the version
-     * @param hash_value: the hash value of the version
-     * @return the index of the file in the version
-     */
-    size_t FindPickingFile(int level, size_t hash_value);
-
     // TODO: Chen
     /**
      * Update the current WA
@@ -129,14 +100,6 @@ public:
      * @param dec: decrement of left bytes
     */
     void UpdateLeftBytes(size_t dec);
-
-//    // TODO: Peixu
-//    /**
-//     * Log file selection of a certain version
-//     * @param hash_value: hash value of the version
-//     * @param index: index of the chosen file
-//    */
-//    void LogSelection(size_t hash_value, int index, size_t WA);
 
     /**
      * Get forests
