@@ -28,8 +28,7 @@ echo -e 'Number of nodes\n0' > $7/history/picking_history_level1
 
 # generate workload
 if [ $1 -ne 0 ] || [ $2 -ne 0 ] || [ $3 -ne 0 ]; then
-    ./load_gen -I $1 -U $2 -D $3 > $7/out.txt
-    mv workload.txt $7
+    ./load_gen -I $1 -U $2 -D $3 --DIR $7 > $7/out.txt
 fi
 
 # check whether workload.txt exists
