@@ -1,5 +1,2 @@
-for i in $(seq 1 $1)
-do
-    echo "Iteration number $i"
-    # Add your code here
-done
+new_dir_path=$1I+$2U+$3D+`date +"%Y-%m-%d-%H:%M:%S"`
+mkdir $4/$new_dir_path

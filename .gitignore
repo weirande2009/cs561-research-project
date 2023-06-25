@@ -97,6 +97,7 @@ fuzz/crash-*
 cmake-build-*
 third-party/folly/
 
-examples/workload.txt
-examples/log/
-examples/tmp/
+examples/
+
+optimal_compaction_strategy/tmp/
+optimal_compaction_strategy/test/

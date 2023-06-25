@@ -12,7 +12,6 @@
 
 using namespace rocksdb;
 std::string kDBPath = "/mnt/ramdisk/cs561_project1";
-// std::string kDBPath = "/tmp/cs561_project1";
 
 void backgroundJobMayComplete(DB* db) {
     uint64_t pending_compact;
@@ -56,7 +55,7 @@ inline void showProgress(const uint64_t& workload_size, const uint64_t& counter)
     }
 }
 
-void runWorkload(Options& op, WriteOptions& write_op, ReadOptions& read_op, std::string compaciton_strategy, uint64_t total_written_bytes) {
+void runWorkload(Options& op, WriteOptions& write_op, ReadOptions& read_op, std::string compaciton_strategy, uint64_t total_written_bytes, const std::string& experiment_path) {
     DB* db;
 
     op.create_if_missing = true;
@@ -76,12 +75,18 @@ void runWorkload(Options& op, WriteOptions& write_op, ReadOptions& read_op, std:
     else if(compaciton_strategy == "kEnumerateAll"){
         op.compaction_pri = kEnumerateAll;
     }
+    AllFilesEnumerator::GetInstance().SetLogLevel(2);
     // set the total bytes to be inserted to database
     // uint64_t total_bytes = 128000000;
     uint64_t total_bytes = total_written_bytes;
 
-    if(op.compaction_pri == kEnumerateAll)
-        AllFilesEnumerator::GetInstance().SetActivated(true);
+    if(op.compaction_pri == kEnumerateAll){
+        AllFilesEnumerator::GetInstance().strategy = AllFilesEnumerator::CompactionStrategy::CEnumerateAll;
+    } else if (op.compaction_pri == kMinOverlappingRatio){
+        AllFilesEnumerator::GetInstance().strategy = AllFilesEnumerator::CompactionStrategy::CMinOverlappingRatio;
+    } else if (op.compaction_pri == kRoundRobin){
+        AllFilesEnumerator::GetInstance().strategy = AllFilesEnumerator::CompactionStrategy::CRoundRobin;
+    } 
 
     {
         op.memtable_factory = std::shared_ptr<VectorRepFactory>(new VectorRepFactory);
@@ -112,8 +117,9 @@ void runWorkload(Options& op, WriteOptions& write_op, ReadOptions& read_op, std:
     assert(s.ok());
 
     // opening workload file for the first time
+    std::string workload_path = experiment_path + "/workload.txt";
     std::ifstream workload_file;
-    workload_file.open("workload.txt");
+    workload_file.open(workload_path);
     assert(workload_file);
     // doing a first pass to get the workload size
     uint32_t entry_size = 8;
@@ -125,7 +131,7 @@ void runWorkload(Options& op, WriteOptions& write_op, ReadOptions& read_op, std:
         ++workload_size;
     workload_file.close();
 
-    workload_file.open("workload.txt");
+    workload_file.open(workload_path);
     assert(workload_file);
 
 //    // Clearing the system cache
@@ -188,7 +194,8 @@ void runWorkload(Options& op, WriteOptions& write_op, ReadOptions& read_op, std:
             assert(s.ok());
             break;
         default:
-            std::cerr << "ERROR: Case match NOT found !!" << std::endl;
+            return;
+            // std::cerr << "ERROR: Case match NOT found !!" << std::endl;
             break;
         }
 
@@ -211,34 +218,48 @@ void runWorkload(Options& op, WriteOptions& write_op, ReadOptions& read_op, std:
     if (!s.ok()) std::cerr << s.ToString() << std::endl;
     assert(s.ok());
     delete db;
-
-    std::cout << "\n----------------------Closing DB-----------------------" << std::endl;
-
     return;
 }
 
 int main(int argc, char* argv[]) {
-    if(argc != 3){
-        std::cout << "There should two parameters" << std::endl;
+    if(argc != 5){
+        std::cout << "There should three parameters: " << std::endl;
+        std::cout << "1. Compaction strategy (kRoundRobin, kMinOverlappingRatio, kEnumerateAll)" << std::endl;
+        std::cout << "2. Total written bytes in the workload" << std::endl;
+        std::cout << "3. The database path" << std::endl;
+        std::cout << "4. The experiment path" << std::endl;
         return -1;
     }
     // parse compaction strategy
     std::string compaction_strategy = argv[1];
     uint64_t total_written_bytes = std::stoi(argv[2]);
+    kDBPath = argv[3];
+    std::cout << argv[4] << std::endl;
+    CS561Log::SetLogRootPath(argv[4]);
+    
+    CS561Log::Log("==================================================");
+    // std::cout << "Program information: " << std::endl;
+    CS561Log::Log("Program information: ");
+    // std::cout << "Compaction strategy: " << compaction_strategy << std::endl;
+    CS561Log::Log("Compaction strategy: " + compaction_strategy);
+    // std::cout << "Total written bytes: " << total_written_bytes << std::endl;
+    CS561Log::Log("Total written bytes: " + std::to_string(total_written_bytes));
+    // std::cout << "Database path: " << argv[3] << std::endl;
+    CS561Log::Log("Database path: " + std::string(argv[3]));
+    // std::cout << "Experiment path: " << argv[4] << std::endl;
+    CS561Log::Log("Experiment path: " + std::string(argv[4]));
 
-    std::cout << "Compaction strategy: " << compaction_strategy << std::endl;
-    std::cout << "Total written bytes: " << total_written_bytes << std::endl;
-
-    std::cout << "Start Testing" << std::endl;
     auto start_time = std::chrono::system_clock::now();
     AllFilesEnumerator::GetInstance();
     Options options;
     WriteOptions write_op;
     ReadOptions read_op;
-    runWorkload(options, write_op, read_op, compaction_strategy, total_written_bytes);
+    runWorkload(options, write_op, read_op, compaction_strategy, total_written_bytes, argv[4]);
 
     auto end_time = std::chrono::system_clock::now();
-    auto durationInSeconds = std::chrono::duration_cast<std::chrono::seconds>(end_time - start_time);
+    auto durationInMicroseconds = std::chrono::duration_cast<std::chrono::microseconds>(end_time - start_time);
 
-    std::cout << "Total time: " << durationInSeconds.count() << std::endl;
+    std::cout << "Total running time: " << durationInMicroseconds.count() << std::endl;
+    CS561Log::Log("Total running time: " + std::to_string(durationInMicroseconds.count()) + "us");
+    return 0;
 }

@@ -7,7 +7,6 @@
 
 namespace ROCKSDB_NAMESPACE {
 
-struct Fsize;
 class PickingHistoryCollector;
 
 class AllFilesEnumerator{
@@ -20,31 +19,53 @@ private:
     // history collector
     PickingHistoryCollector collector;
 
-    // whether this enumerator is activated
-    bool activated;
+    // log level
+    // there are two log level (default 1):
+    // 1- only log the hash value of the version and the chosen file index
+    // 2- log the concrete information of the version and the chosen file index
+    // all other level will be treated as no log
+    int log_level;
     
     AllFilesEnumerator();
     ~AllFilesEnumerator();
 
 public:
+    enum CompactionStrategy{
+        CRoundRobin,
+        CMinOverlappingRatio,
+        CEnumerateAll
+    };
+
+    // Compaction strategy
+    CompactionStrategy strategy;
+
     static AllFilesEnumerator& GetInstance() {
         static AllFilesEnumerator instance;
         return instance;
     }
 
     /**
-     * Record the current compaction according the version and files chosen to compact
-     * @param input_files contains the information of files chosen to compact in each level
-     * @param version_storage_info contains the current version of files for each level
-    */
-    // void RecordCompaction(const std::vector<CompactionInputFiles>& input_files, const rocksdb::VersionStorageInfo& version_storage_info);
-
-    /**
      * according to the current file version, choose a new file as the first file
      * @param temp current version
      * @param level the level of the version
+     * 
+     * @return the index of the chosen file
     */
-    void EnumerateAll(std::vector<Fsize>& temp, int level);
+    int EnumerateAll(std::vector<Fsize>& temp, int level);
+
+    /**
+     * Collect the compaction information
+     * @param files current version of all levels
+     * @param file_overlapping_ratio the overlapping ratio of each file in the level
+     * @param num_level the number of levels
+     * @param level the level of the triggered compaction
+     * @param index the index of the chosen file
+    */
+    void CollectCompactionInfo(std::vector<FileMetaData*>* files, 
+                               const std::vector<uint64_t>& file_overlapping_ratio, 
+                               int num_level, 
+                               int level, 
+                               int index);
 
     /**
      * get the object of picking history collector
@@ -52,7 +73,7 @@ public:
     PickingHistoryCollector& GetCollector();
 
     /**
-     * terminate the program and do some collecting work
+     * Terminate the program and do some collecting work
     */
     void Terminate();
 
@@ -61,9 +82,21 @@ public:
     */
     void Pruning();
 
-    bool Activated();
+    /**
+     * Get the log level
+    */
+   int GetLogLevel();
 
-    void SetActivated(bool b);
+   /**
+    * Set the log level
+    * @param log_level_ the new log level
+   */
+    void SetLogLevel(int log_level_);
+
+    /**
+     * Check whether all possible selections have been enumerated
+    */
+   bool CheckFinishEnumeration();
 
 };
 

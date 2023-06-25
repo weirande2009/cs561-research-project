@@ -1,0 +1,15 @@
+5/26:
+1. write a shell script that enables running multiple workloads 
+at the same time. (finished in 6/3)
+2. write a shell script and modify current program to make 
+the write amplification of the optimal one and two baseline
+algorithms collectable for the next step work.
+Save the write amplification to a file for further analysis10fen
+3. write a shell script and modify current program to make
+any run for a workload replayable.
+
+6/24:
+1. modify the current scripts to make the experiment run in a single "docker"
+2. run larger workloads for more information
+
+

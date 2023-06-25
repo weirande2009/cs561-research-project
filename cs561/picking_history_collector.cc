@@ -8,6 +8,22 @@ using std::endl;
 
 namespace ROCKSDB_NAMESPACE {
 
+PickingHistoryCollector::PickingHistoryCollector() : 
+    DUMP_FILEPATH_LEVEL0(CS561Log::LOG_ROOT + "/history/picking_history_level0"),
+    DUMP_FILEPATH_LEVEL1(CS561Log::LOG_ROOT + "/history/picking_history_level1"),
+    forests(VersionForest({DUMP_FILEPATH_LEVEL0, DUMP_FILEPATH_LEVEL1})){
+    auto p = CS561Log::LoadMinimum();
+    global_min_WA = p.first;
+    global_min_WA_corresponding_left_bytes = p.second;
+    WA = 0;
+    left_bytes = 0;
+    compaction_time = 0;
+}
+
+PickingHistoryCollector::~PickingHistoryCollector() {
+    DumpToFile();
+}
+
 std::string PickingHistoryCollector::serialize_Fsize_vec(const std::vector<ROCKSDB_NAMESPACE::Fsize> &temp) {
     static FileSerializer serializer;
     static std::hash<std::string> hasher;
@@ -35,8 +51,10 @@ std::string PickingHistoryCollector::serialize_Fsize_vec(const std::vector<ROCKS
 void PickingHistoryCollector::UpdateWA(size_t new_WA) {
     WA += new_WA;
     WA_corresponding_left_bytes = left_bytes;
-    // std::cout << std::endl << "New added WA: " << new_WA << std::endl;
-    // PrintCurrentData();
+}
+
+void PickingHistoryCollector::UpdateCompactionTime(size_t new_compaction_time) {
+    compaction_time += new_compaction_time;
 }
 
 bool PickingHistoryCollector::CheckContinue() {
@@ -47,7 +65,7 @@ void PickingHistoryCollector::UpdateLeftBytes(size_t new_left_bytes) {
     left_bytes = new_left_bytes;
 }
 
-VersionForests& PickingHistoryCollector::GetVersionForests(){
+VersionForest& PickingHistoryCollector::GetVersionForest(){
     return forests;
 }
 
@@ -57,8 +75,10 @@ void PickingHistoryCollector::DumpToFile(){
     // compute minimum WA
     if((WA + WA_corresponding_left_bytes) <= (global_min_WA + global_min_WA_corresponding_left_bytes)){
         // dump minimum
-        CS561Log::LogMinimum(WA, WA_corresponding_left_bytes);
+        CS561Log::LogMinimum(WA, WA_corresponding_left_bytes, compactions_info);
     }
+    // log compaction latency
+    CS561Log::Log("compaction_time: " + std::to_string(compaction_time) + "us");
 }
 
 void PickingHistoryCollector::DumpWAResult(){
@@ -70,18 +90,23 @@ void PickingHistoryCollector::DumpWAMinimum(){
     // compute minimum WA
     if((WA + WA_corresponding_left_bytes) <= (global_min_WA + global_min_WA_corresponding_left_bytes)){
         // dump minimum
-        CS561Log::LogMinimum(WA, WA_corresponding_left_bytes);
-    }
-    else{
-        // dump minimum
-        CS561Log::LogMinimum(global_min_WA, global_min_WA_corresponding_left_bytes);
+        CS561Log::LogMinimum(WA, WA_corresponding_left_bytes, compactions_info);
     }
 }
 
-void PickingHistoryCollector::PrintCurrentData(){
-    std::cout << "Current WA: " << WA << std::endl;
-    std::cout << "Gloabl Minimum WA: " << global_min_WA << std::endl;
-    std::cout << "Left Bytes: " << left_bytes << std::endl;
+void PickingHistoryCollector::CollectCompactionInfo(
+        int level, 
+        std::vector<FileMetaData*>* files, 
+        const std::vector<uint64_t>& file_overlapping_ratio, 
+        int num_level, 
+        size_t hash_value, 
+        size_t index){
+    compactions_info.emplace_back(CompactionInfo(level, files, file_overlapping_ratio, num_level, hash_value, index));
 }
+
+std::vector<CompactionInfo>& PickingHistoryCollector::GetCompactionsInfo(){
+    return compactions_info;
+}
+
 
 } // namespace ROCKSDB_NAMESPACE

@@ -5,6 +5,11 @@
 #include <iostream>
 #include <cassert>
 
+#include "cs561/file_serializer.h"
+#include "cs561/cs561_log.h"
+
+namespace ROCKSDB_NAMESPACE {
+
 struct VersionNode{
     // id of the version
     size_t id{};
@@ -32,7 +37,7 @@ struct VersionNode{
 
     // tag for whether this version is a leaf, when constructing, it's default to be true
     // in case of there is not compaction on it
-    bool is_leaf{};
+    // bool is_leaf{};
 
     // tag for whether we have enumerate all possibilities after this version
     bool fully_enumerated{};
@@ -51,7 +56,7 @@ struct VersionNode{
 };
 
 // version forest of a level
-class LevelVersionForest{
+class LevelVersionTree{
 private:
     // a list of version nodes
     std::vector<VersionNode> version_nodes;
@@ -74,10 +79,10 @@ private:
 
 public:
     // TODO: Peixu
-    explicit LevelVersionForest(const std::string& fp);
+    explicit LevelVersionTree(const std::string& fp);
 
     // TODO: Peixu
-    ~LevelVersionForest() noexcept;
+    ~LevelVersionTree() noexcept;
 
     // TODO: Ran
     /**
@@ -96,22 +101,28 @@ public:
      * Set the current version to be fully enumerated
     */
     void SetCurrentVersionFullyEnumerated();
+
+    /**
+     * Check whether the version exists
+    */
+    bool IsVersionExist(size_t hash_value);
+
 };
 
-// Contain forests for each level
-class VersionForests{
+// Contain tree for each level
+class VersionForest{
 private:
     // file path of the version node in disk
     std::string file_path;
     // version forests for each level
-    std::vector<LevelVersionForest> level_version_forests;
+    std::vector<LevelVersionTree> level_version_trees;
 
 public:
     // TODO: Peixu
-    explicit VersionForests(const std::vector<std::string>& level_file_path);
+    explicit VersionForest(const std::vector<std::string>& level_file_path);
 
     // TODO: Peixu
-    ~VersionForests() = default;
+    ~VersionForest() = default;
 
     // TODO: Ran
     // get the index of the file in the current version of a certain level
@@ -123,8 +134,13 @@ public:
     /**
      * Get LevelVersionForest
     */
-    LevelVersionForest& GetLevelVersionForest(int level);
+    LevelVersionTree& GetLevelVersionTree(int level);
+
+    /**
+     * Check whether the version exists
+    */
+    bool IsVersionExist(int level, size_t hash_value);
+
 };
 
-
-
+} // namespace ROCKSDB_NAMESPACE

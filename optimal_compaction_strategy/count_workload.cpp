@@ -4,10 +4,20 @@
 
 using namespace std;
 
-int main(){
+int main(int argc, char* argv[]){
+    if(argc != 2){
+        std::cout << "There should One parameters: " << std::endl;
+        std::cout << "1. The experiment path" << std::endl;
+        return -1;
+    }
+
+    string experiment_path = argv[1];
+    string workload_file_path = experiment_path + "/workload.txt";
+    string output_file_path = experiment_path + "/workload_count.txt";
+
     // opening workload file for the first time
     std::ifstream workload_file;
-    workload_file.open("workload.txt");
+    workload_file.open(workload_file_path);
 
     unordered_map<char, int> counters;
     int counter = 0;
@@ -26,7 +36,6 @@ int main(){
             workload_file >> key >> value;
             total_bytes += key.length() + value.length();
             break;
-
         case 'Q': // probe: point query
             workload_file >> key;
             break;
@@ -43,11 +52,13 @@ int main(){
         }
         counter++;
     }
-
+    
     cout << "Total operations: " << counter << endl;
     for(auto& p: counters){
         cout << "Operation " << p.first << ": " << p.second << endl;
     }
+    std::ofstream out_file(output_file_path);
+    out_file << "total_written_bytes=" << total_bytes << endl; 
     cout << "Total bytes: " << total_bytes << endl;
     return 0;
 }

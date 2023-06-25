@@ -1430,9 +1430,6 @@ Status DBImpl::CompactFilesImpl(
 
   compaction_job.Prepare();
 
-  // record this compaction
-  // AllFilesEnumerator::GetInstance().RecordCompaction(input_files, *version->storage_info());
-
   mutex_.Unlock();
   TEST_SYNC_POINT("CompactFilesImpl:0");
   TEST_SYNC_POINT("CompactFilesImpl:1");
@@ -3453,7 +3450,12 @@ Status DBImpl::BackgroundCompaction(bool* made_progress,
     TEST_SYNC_POINT_CALLBACK(
         "DBImpl::BackgroundCompaction:NonTrivial:BeforeRun", nullptr);
     // Should handle erorr?
+    // record the compaction start time
+    auto start_time = std::chrono::system_clock::now();
     compaction_job.Run().PermitUncheckedError();
+    auto end_time = std::chrono::system_clock::now();
+    auto interval_time = std::chrono::duration_cast<std::chrono::microseconds>(end_time - start_time);
+    AllFilesEnumerator::GetInstance().GetCollector().UpdateCompactionTime(interval_time.count());
     TEST_SYNC_POINT("DBImpl::BackgroundCompaction:NonTrivial:AfterRun");
     mutex_.Lock();
 

@@ -862,7 +862,7 @@ Status CompactionJob::Install(const MutableCFOptions& mutable_cf_options) {
 
   // TODO: Add WA to collector
   AllFilesEnumerator::GetInstance().GetCollector().UpdateWA(bytes_written_all);
-  if(AllFilesEnumerator::GetInstance().Activated()){
+  if(AllFilesEnumerator::GetInstance().strategy == AllFilesEnumerator::CompactionStrategy::CEnumerateAll){
     AllFilesEnumerator::GetInstance().Pruning();
   }
 

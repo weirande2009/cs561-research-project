@@ -1,85 +1,155 @@
 //
 // Created by bruce on 3/25/2023.
 //
+#include "cs561/version_forest.h"
 
 #include <cassert>
+#include <limits>
+#include <iomanip>
 
-#include "cs561/version_forests.h"
-#include "cs561/cs561_log.h"
+namespace ROCKSDB_NAMESPACE {
 
 std::ostream& operator<< (std::ostream& os, const VersionNode& node) {
-    static const std::string DELIM_COMMA = " ";
+    static const std::string TAB = "\t";
 
-    os << node.id << DELIM_COMMA <<
-       node.parent_id << DELIM_COMMA <<
-       node.hash_value << DELIM_COMMA <<
-       node.file_num << DELIM_COMMA <<
-       node.is_leaf << DELIM_COMMA <<
-       node.fully_enumerated << DELIM_COMMA;
-
-    os << node.chosen_children.size() << DELIM_COMMA;
-    for (size_t child_id: node.chosen_children) {
-        os << child_id << DELIM_COMMA;
+    os << node.id << TAB;
+    // check whether the parent_id is long max
+    if(node.parent_id == std::numeric_limits<size_t>::max()){
+        os << -1 << TAB;
+    }
+    else{
+        os << node.parent_id << TAB;
+    }
+    os << std::setfill('0') << std::setw(sizeof(size_t)*2) << std::hex << node.hash_value << std::dec << TAB;
+    os << node.file_num << TAB << TAB << TAB;
+    if(node.fully_enumerated){
+        os << "yes" << TAB << TAB << TAB << TAB << TAB;
+    }
+    else{
+        os << "no"<< TAB << TAB << TAB << TAB << TAB;
     }
 
+    os << node.chosen_children.size() << TAB << TAB << TAB << TAB << TAB;
+
+    for (size_t child_id: node.chosen_children) {
+        if(child_id == std::numeric_limits<size_t>::max()){
+            os << -1 << TAB;
+        }
+        else{
+            os << child_id << TAB;
+        }
+    }
     os << std::endl;
 
     return os;
 }
 
 std::istream& operator>> (std::istream& is, VersionNode& node) {
-    is >> node.id >> node.parent_id >> node.hash_value >> node.file_num >> node.is_leaf >> node.fully_enumerated;
+    is >> node.id;
+    // read parent id as a string to check whether it's -1
+    std::string str_parent_id;
+    is >> str_parent_id;
+    if(str_parent_id == "-1"){
+        node.parent_id = std::numeric_limits<size_t>::max();
+    }
+    else{
+        node.parent_id = std::stoull(str_parent_id);
+    }
+    // read hash value and convert hex to dec
+    is >> std::hex >> node.hash_value >> std::dec;
+    is >> node.file_num;
+    
+    // read fully enumerated string (yes or no)
+    std::string str_fully_enumerated;
+    is >> str_fully_enumerated;
+    if(str_fully_enumerated == "yes"){
+        node.fully_enumerated = true;
+    }
+    else{
+        node.fully_enumerated = false;
+    }
     size_t sz;
     is >> sz;
 
     node.chosen_children.clear();
     node.chosen_children.reserve(sz);
-    size_t tmp;
+    std::string str_child_id;
     for (size_t i = 0; i < sz; ++ i) {
-        is >> tmp;
-        node.chosen_children.push_back(tmp);
+        is >> str_child_id;
+        if(str_child_id == "-1"){
+            node.chosen_children.push_back(std::numeric_limits<size_t>::max());
+        }
+        else{
+            node.chosen_children.push_back(std::stoull(str_child_id));
+        }
     }
 
     return is;
 }
 
-void LevelVersionForest::LoadFromFile() {
+void LevelVersionTree::LoadFromFile() {
     assert(!file_path.empty());
 
     std::fstream f(file_path);
 
+    // skip line
+    std::string skip_line;
+
+    // skip the first line
+    std::getline(f, skip_line);
     // version_nodes
     size_t vn_size;
     f >> vn_size;
+    // std::cout << "Number of nodes: " << vn_size << std::endl;
+    if(vn_size == 0){
+        return;
+    }
+    std::getline(f, skip_line);
     VersionNode node{};
     version_nodes.clear();
-    if(vn_size != 0)
-        version_nodes.reserve(vn_size);
+    version_nodes.reserve(vn_size);
+    // skip the third line
+    std::getline(f, skip_line);
+    // std::cout << skip_line << std::endl;
+        
     for (size_t i = 0; i < vn_size; ++i) {
         f >> node;
         version_nodes.emplace_back(std::move(node));
     }
 
     // hash_to_id
-    if(version_nodes.size() != 0)
-        hash_to_id.reserve(version_nodes.size());
     size_t sz = version_nodes.size();
-    std::cout << "loaded node number: " << sz << std::endl;
+    if(version_nodes.size() != 0){
+        hash_to_id.reserve(version_nodes.size());
+    }
     for (size_t i = 0; i < sz; ++i) {
         hash_to_id[version_nodes[i].hash_value] = i;
     }
 }
 
-void LevelVersionForest::DumpToFile() {
-    static const std::string DELIM_COMMA = " ";
+void LevelVersionTree::DumpToFile() {
+    static const std::string TAB = "\t";
 
     assert(!file_path.empty());
 
     std::ofstream f(file_path);
 
+    // the first line
+    f << "Number of nodes" << std::endl;
+
     // version_nodes
     size_t vn_size = version_nodes.size();
-    f << vn_size << DELIM_COMMA << std::endl;
+    f << vn_size << std::endl;
+
+    // the first line
+    f << "ID" << TAB << 
+         "PID" << TAB << 
+         "Hash_Value" << TAB << TAB << TAB <<
+         "File_Number" << TAB << 
+         "Fully_Enumerated" << TAB << 
+         "Number_of_children" << TAB <<
+         "Children" << std::endl;
+
     for (const auto& vn: version_nodes) {
         f << vn;
     }
@@ -87,7 +157,7 @@ void LevelVersionForest::DumpToFile() {
     // no need for dumping hash_to_id
 }
 
-void LevelVersionForest::AddNode(size_t hash_value, int file_num){
+void LevelVersionTree::AddNode(size_t hash_value, int file_num){
     // check whether hash_value is a new version
     assert(hash_to_id.find(hash_value) == hash_to_id.end());
     // the id is the index in version_nodes which is the size of current version_nodes
@@ -105,7 +175,7 @@ void LevelVersionForest::AddNode(size_t hash_value, int file_num){
     }
 }
 
-size_t LevelVersionForest::GetCompactionFile(size_t hash_value, int file_num){
+size_t LevelVersionTree::GetCompactionFile(size_t hash_value, int file_num){
     // first check whether the version of hash_value already exists
     if(hash_to_id.find(hash_value) == hash_to_id.end()){
         // create a new version
@@ -139,7 +209,9 @@ size_t LevelVersionForest::GetCompactionFile(size_t hash_value, int file_num){
         // if we have selected all files, return long max
         if(version_nodes[index].chosen_children.size() == static_cast<size_t>(version_nodes[index].file_num)){
             version_nodes[index].fully_enumerated = true;
-            CS561Log::Log("Version: " + std::to_string(hash_value) + "All files has been selected");
+            std::stringstream ss;
+            ss << std::setfill('0') << std::setw(sizeof(size_t) * 2) << std::hex << hash_value;
+            CS561Log::Log("Terminate reason: all files of version " + ss.str() + " has been selected.");
             return std::numeric_limits<size_t>::max();
         }
         // size is the next index
@@ -153,16 +225,15 @@ size_t LevelVersionForest::GetCompactionFile(size_t hash_value, int file_num){
     return compaction_file_index;
 }
 
-LevelVersionForest::LevelVersionForest(const std::string& fp): file_path(fp) {
-    std::cout << "Initialize LevelVersionForest" << std::endl;
+LevelVersionTree::LevelVersionTree(const std::string& fp): file_path(fp) {
     LoadFromFile();
 }
 
-LevelVersionForest::~LevelVersionForest() noexcept {
+LevelVersionTree::~LevelVersionTree() noexcept {
     DumpToFile();
 }
 
-void LevelVersionForest::SetCurrentVersionFullyEnumerated(){
+void LevelVersionTree::SetCurrentVersionFullyEnumerated(){
     if(last_version_id == std::numeric_limits<size_t>::max()){
         return;
     }
@@ -173,22 +244,31 @@ void LevelVersionForest::SetCurrentVersionFullyEnumerated(){
     }
 }
 
-VersionForests::VersionForests(const std::vector<std::string>& level_file_path) {
-    std::cout << "Initialize VersionForests" << std::endl;
+bool LevelVersionTree::IsVersionExist(size_t hash_value){
+    return hash_to_id.find(hash_value) != hash_to_id.end();
+}
+
+VersionForest::VersionForest(const std::vector<std::string>& level_file_path) {
     for (const auto& path: level_file_path)
-        level_version_forests.emplace_back(LevelVersionForest(path));
+        level_version_trees.emplace_back(LevelVersionTree(path));
 }
 
-size_t VersionForests::GetCompactionFile(int level, size_t hash_value, int file_num){
-    return level_version_forests[level].GetCompactionFile(hash_value, file_num);
+size_t VersionForest::GetCompactionFile(int level, size_t hash_value, int file_num){
+    return level_version_trees[level].GetCompactionFile(hash_value, file_num);
 }
 
-void VersionForests::DumpToFile(){
-    for(auto& lvf: level_version_forests){
+void VersionForest::DumpToFile(){
+    for(auto& lvf: level_version_trees){
         lvf.DumpToFile();
     }
 }
 
-LevelVersionForest& VersionForests::GetLevelVersionForest(int level){
-    return level_version_forests[level];
+LevelVersionTree& VersionForest::GetLevelVersionTree(int level){
+    return level_version_trees[level];
 }
+
+bool VersionForest::IsVersionExist(int level, size_t hash_value){
+    return level_version_trees[level].IsVersionExist(hash_value);
+}
+
+} // namespace ROCKSDB_NAMESPACE
