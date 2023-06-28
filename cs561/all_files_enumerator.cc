@@ -9,7 +9,8 @@ namespace ROCKSDB_NAMESPACE {
 AllFilesEnumerator::AllFilesEnumerator() : 
     last_version(std::vector<std::size_t>(2, std::numeric_limits<size_t>::max())),
     collector(),
-    log_level(1){
+    log_level(1),
+    compaction_counter(0){
         
 }
 
@@ -27,6 +28,7 @@ int AllFilesEnumerator::EnumerateAll(std::vector<rocksdb::Fsize>& temp, int leve
         return -1;
     }
     last_version[level] = hash_value;
+    ++compaction_counter;
     // if this is a new version, record the file information of this version to disk
     if(!collector.GetVersionForest().IsVersionExist(level, hash_value)){
         CS561Log::LogVersion(temp, hash_value);
@@ -71,6 +73,14 @@ void AllFilesEnumerator::CollectCompactionInfo(
     if(log_level == 2){
         CS561Log::LogRegularCompactionInfo(collector.GetCompactionsInfo().back(), collector.GetCompactionsInfo().size());
     }
+}
+
+int AllFilesEnumerator::NextChoiceForManual(){
+    return manual_list[compaction_counter++];
+}
+
+void AllFilesEnumerator::SetManualList(const std::vector<size_t>& ml){
+    manual_list = ml;
 }
 
 PickingHistoryCollector& AllFilesEnumerator::GetCollector(){

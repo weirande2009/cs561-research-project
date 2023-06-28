@@ -25,6 +25,12 @@ private:
     // 2- log the concrete information of the version and the chosen file index
     // all other level will be treated as no log
     int log_level;
+
+    // manual list: contains the file choice of each compaction
+    std::vector<size_t> manual_list;
+
+    // the compaction counter, record the number of compactions
+    int compaction_counter;
     
     AllFilesEnumerator();
     ~AllFilesEnumerator();
@@ -33,7 +39,8 @@ public:
     enum CompactionStrategy{
         CRoundRobin,
         CMinOverlappingRatio,
-        CEnumerateAll
+        CEnumerateAll,
+        CManual,
     };
 
     // Compaction strategy
@@ -66,6 +73,17 @@ public:
                                int num_level, 
                                int level, 
                                int index);
+
+    /**
+     * Get the next file choice when replaying compaction
+    */
+    int NextChoiceForManual();
+
+    /**
+     * Set the manual list
+     * @param ml the manual list
+    */
+    void SetManualList(const std::vector<size_t>& ml);
 
     /**
      * get the object of picking history collector

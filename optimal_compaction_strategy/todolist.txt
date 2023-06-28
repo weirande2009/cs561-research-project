@@ -4,12 +4,16 @@ at the same time. (finished in 6/3)
 2. write a shell script and modify current program to make 
 the write amplification of the optimal one and two baseline
 algorithms collectable for the next step work.
-Save the write amplification to a file for further analysis10fen
+Save the write amplification to a file for further analysis
 3. write a shell script and modify current program to make
 any run for a workload replayable.
 
 6/24:
-1. modify the current scripts to make the experiment run in a single "docker"
+1. modify the current scripts to make the experiment run in a single "docker" （finished on 6/25）
 2. run larger workloads for more information
+
+6/28:
+1. fix the bug of multi run
+2. write a script to get the overlapping ratio info of the optimal compaction of each workload
 
 

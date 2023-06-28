@@ -13,6 +13,25 @@
 using namespace rocksdb;
 std::string kDBPath = "/mnt/ramdisk/cs561_project1";
 
+std::vector<size_t> readManualList(const std::string& manual_list_path){
+    std::ifstream f(manual_list_path);
+    if(!f.is_open()){
+        std::cout << "Read Manual List Error" << std::endl;
+        exit(-1);
+    }
+    size_t manual_list_size = 0;
+    f >> manual_list_size;
+    if(manual_list_size <= 0){
+        std::cout << "Read Manual List Error" << std::endl;
+        exit(-1);
+    }
+    std::vector<size_t> manual_list(manual_list_size);
+    for(size_t i = 0; i < manual_list_size; ++i){
+        f >> manual_list[i];
+    }
+    return manual_list;
+}
+
 void backgroundJobMayComplete(DB* db) {
     uint64_t pending_compact;
     uint64_t pending_compact_bytes;
@@ -68,25 +87,23 @@ void runWorkload(Options& op, WriteOptions& write_op, ReadOptions& read_op, std:
     // set the compaction strategy
     if(compaciton_strategy == "kRoundRobin"){
         op.compaction_pri = kRoundRobin;
-    }
-    else if(compaciton_strategy == "kMinOverlappingRatio"){
+        AllFilesEnumerator::GetInstance().strategy = AllFilesEnumerator::CompactionStrategy::CRoundRobin;
+    } else if(compaciton_strategy == "kMinOverlappingRatio"){
         op.compaction_pri = kMinOverlappingRatio;
-    }
-    else if(compaciton_strategy == "kEnumerateAll"){
+        AllFilesEnumerator::GetInstance().strategy = AllFilesEnumerator::CompactionStrategy::CMinOverlappingRatio;
+    } else if(compaciton_strategy == "kEnumerateAll"){
         op.compaction_pri = kEnumerateAll;
+        AllFilesEnumerator::GetInstance().strategy = AllFilesEnumerator::CompactionStrategy::CEnumerateAll;
+    } else if(compaciton_strategy == "kManual"){
+        op.compaction_pri = kEnumerateAll;
+        std::string manual_list_path = experiment_path + "/manual_list.txt";
+        AllFilesEnumerator::GetInstance().strategy = AllFilesEnumerator::CompactionStrategy::CManual;
+        AllFilesEnumerator::GetInstance().SetManualList(readManualList(manual_list_path));
     }
     AllFilesEnumerator::GetInstance().SetLogLevel(2);
     // set the total bytes to be inserted to database
     // uint64_t total_bytes = 128000000;
     uint64_t total_bytes = total_written_bytes;
-
-    if(op.compaction_pri == kEnumerateAll){
-        AllFilesEnumerator::GetInstance().strategy = AllFilesEnumerator::CompactionStrategy::CEnumerateAll;
-    } else if (op.compaction_pri == kMinOverlappingRatio){
-        AllFilesEnumerator::GetInstance().strategy = AllFilesEnumerator::CompactionStrategy::CMinOverlappingRatio;
-    } else if (op.compaction_pri == kRoundRobin){
-        AllFilesEnumerator::GetInstance().strategy = AllFilesEnumerator::CompactionStrategy::CRoundRobin;
-    } 
 
     {
         op.memtable_factory = std::shared_ptr<VectorRepFactory>(new VectorRepFactory);
@@ -224,7 +241,7 @@ void runWorkload(Options& op, WriteOptions& write_op, ReadOptions& read_op, std:
 int main(int argc, char* argv[]) {
     if(argc != 5){
         std::cout << "There should three parameters: " << std::endl;
-        std::cout << "1. Compaction strategy (kRoundRobin, kMinOverlappingRatio, kEnumerateAll)" << std::endl;
+        std::cout << "1. Compaction strategy (kRoundRobin, kMinOverlappingRatio, kEnumerateAll, kManual)" << std::endl;
         std::cout << "2. Total written bytes in the workload" << std::endl;
         std::cout << "3. The database path" << std::endl;
         std::cout << "4. The experiment path" << std::endl;

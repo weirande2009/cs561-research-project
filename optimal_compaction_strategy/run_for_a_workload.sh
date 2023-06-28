@@ -12,10 +12,13 @@ if ! [ $# -eq 7 ]; then
 fi
 
 # reset history and result
-if [ -d $7 ]; then
-    rm -rf $7
+# if [ -d $7 ]; then
+#     rm -rf $7
+# fi
+# mkdir $7
+if [ ! -d $7 ]; then
+    mkdir $7
 fi
-mkdir $7
 if [ ! -d $7/history ]; then
     mkdir $7/history
 fi
@@ -26,8 +29,8 @@ touch $7/out.txt
 echo -e 'Number of nodes\n0' > $7/history/picking_history_level0
 echo -e 'Number of nodes\n0' > $7/history/picking_history_level1
 
-# generate workload
-if [ $1 -ne 0 ] || [ $2 -ne 0 ] || [ $3 -ne 0 ]; then
+# generate workload, if there is already a workload, don't generate a new one
+if [ ! -e $7/workload.txt ]; then
     ./load_gen -I $1 -U $2 -D $3 --DIR $7 > $7/out.txt
 fi
 

@@ -6999,7 +6999,18 @@ void VersionStorageInfo::PickUnselectedFile(
   // std::cout << files_by_compaction_pri.size() << std::endl;
 
   // choose an unselected file and put it to the first place
-  int chosen_file_index = AllFilesEnumerator::GetInstance().EnumerateAll(temp, level);
+  int chosen_file_index = 0;
+  switch (AllFilesEnumerator::GetInstance().strategy)
+  {
+  case AllFilesEnumerator::CompactionStrategy::CEnumerateAll:
+    chosen_file_index = AllFilesEnumerator::GetInstance().EnumerateAll(temp, level);
+    break;
+  case AllFilesEnumerator::CompactionStrategy::CManual:
+    chosen_file_index = AllFilesEnumerator::GetInstance().NextChoiceForManual();
+    break;
+  default:
+    break;
+  }
   // collect compaction info
   AllFilesEnumerator::GetInstance().CollectCompactionInfo(files_, file_overlapping_ratio, num_non_empty_levels_, level, chosen_file_index);
   // initialize files_by_compaction_pri_
