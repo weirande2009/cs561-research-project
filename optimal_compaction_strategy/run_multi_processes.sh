@@ -21,7 +21,7 @@ done
 
 for i in $(seq 1 $6)
 do
-    // there can be only one type of workload
+    # there can be only one type of workload
     ./run_for_a_type.sh $1 $2 $3 $4 $5 1 $default_rocksdb_path$i $default_experiment_log_path$i $i &
 done
 

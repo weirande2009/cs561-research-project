@@ -82,7 +82,7 @@ void runWorkload(Options& op, WriteOptions& write_op, ReadOptions& read_op, std:
     op.target_file_size_base = 8 * 1024 * 1024;
     op.level0_file_num_compaction_trigger = 4;
     op.max_bytes_for_level_multiplier = 10;
-    op.max_bytes_for_level_base = 32 * 1024 * 1024;
+    op.max_bytes_for_level_base = 64 * 1024 * 1024;
 
     // set the compaction strategy
     if(compaciton_strategy == "kRoundRobin"){
