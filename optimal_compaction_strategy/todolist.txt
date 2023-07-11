@@ -1,6 +1,6 @@
 5/26:
 1. write a shell script that enables running multiple workloads 
-at the same time. (finished in 6/3)
+at the same time. (finished on 6/3)
 2. write a shell script and modify current program to make 
 the write amplification of the optimal one and two baseline
 algorithms collectable for the next step work.
@@ -13,7 +13,16 @@ any run for a workload replayable.
 2. run larger workloads for more information
 
 6/28:
-1. fix the bug of multi run
+1. fix the bug of multi run (finished on 6/30)
 2. write a script to get the overlapping ratio info of the optimal compaction of each workload
 
+7/2:
+1. Design MySQL tables to record the data of experiments.
+2. Write the code to insert data to MySQL
+3. Write the code to get and analyze the data in MySQL
+(For the above three things, the minimum requirement is to collect the minoverlappingratio rank of 
+the chosen file of each compaction)
+
+7/9:
+1. Integrate some of the shell scripts to be c++ codes.
 

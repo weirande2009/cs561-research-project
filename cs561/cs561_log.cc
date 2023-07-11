@@ -126,7 +126,7 @@ void CS561Log::LogCompactionInfoForLevel(std::ofstream& target, const Compaction
          "Overlapping bytes" << "\t" <<
          std::endl;
     for(size_t j=0; j<compaction_info.level_files_info[level].size(); ++j){
-        if(j == compaction_info.index && level != 0){ // when the file is chosen for compaciton in this level and this level is not level 0
+        if(j == compaction_info.index && level != 0 && level == 1){ // when the file is chosen for compaciton in this level and this level is not level 0
             AlignOutput(target, "File No.", std::to_string(j)+"*");
         } else {
             AlignOutput(target, "File No.", std::to_string(j));
@@ -183,6 +183,18 @@ void CS561Log::LogWA(size_t WA, int type){
     // write back
     std::ofstream f2(LOG_ROOT+"/"+TMP_RESULT_FILEPATH);
     f2 << rbwa << " " << mowa << " " << opwa << std::endl;
+}
+
+void CS561Log::LogSimpleMinimumCompactionInfo(std::ofstream& of, const std::vector<CompactionInfo>& compactions_info){
+    of << "Optimal compaction choice rank: ";
+    for(size_t i = 0; i < compactions_info.size(); ++i){
+        if(i != 0){
+            of << " ";
+        }
+        of << compactions_info[i].choice_rank;
+    }
+    of << std::endl;
+    of << std::endl;
 }
 
 

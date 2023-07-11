@@ -36,6 +36,7 @@ struct CompactionInfo{
     int level;
     size_t hash_value;
     size_t index;
+    size_t choice_rank;  // the overlapping ratio rank of the chosen file
 
     CompactionInfo(int level_, std::vector<FileMetaData*>* level_file, const std::vector<uint64_t>& file_overlapping_ratio_, int num_level, size_t hash_value_, size_t index_) : 
         file_overlapping_ratio(file_overlapping_ratio_),
@@ -54,7 +55,24 @@ struct CompactionInfo{
                 }
             }
         }
+
+        std::vector<std::pair<uint64_t, int>> pairs(file_overlapping_ratio.size());
+        for(size_t i = 0; i < file_overlapping_ratio.size(); ++i){
+            pairs[i] = {file_overlapping_ratio[i], i};
+        }
+
+        sort(pairs.begin(), pairs.end());
+        for(size_t i = 0; i < pairs.size(); ++i){
+            if(pairs[i].second == index){
+                choice_rank = i;
+                break;
+            }
+        }
+
+
     }
+
+
 };
 
 class CS561Log{
@@ -167,6 +185,13 @@ public:
      * @param type type of the current run(0: roundrobin, 1: minoverlappingratio, 2: optimal)
     */
     static void LogWA(size_t WA, int type);
+
+    /**
+     * Log the simplified information of the optimal compaction
+     * @param of ofstream object
+     * @param compaction_info a vector records compaction informatio of every compaction
+    */
+    static void LogSimpleMinimumCompactionInfo(std::ofstream& of, const std::vector<CompactionInfo>& compactions_info);
 
 };
 
